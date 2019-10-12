@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.seiei.saasaps.dao.EfficiencyOfLineMapper">
+  <resultMap id="BaseResultMap" type="top.seiei.saasaps.bean.EfficiencyOfLine">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="production_line_id" jdbcType="INTEGER" property="productionLineId" />
+    <result column="style_name" jdbcType="VARCHAR" property="styleName" />
+    <result column="efficiency" jdbcType="DECIMAL" property="efficiency" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, production_line_id, style_name, efficiency, update_user_id, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from EfficiencyOfLine
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from EfficiencyOfLine
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="top.seiei.saasaps.bean.EfficiencyOfLine">
+    insert into EfficiencyOfLine (id, production_line_id, style_name, 
+      efficiency, update_user_id, create_time, 
+      update_time)
+    values (#{id,jdbcType=INTEGER}, #{productionLineId,jdbcType=INTEGER}, #{styleName,jdbcType=VARCHAR}, 
+      #{efficiency,jdbcType=DECIMAL}, #{updateUserId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="top.seiei.saasaps.bean.EfficiencyOfLine" useGeneratedKeys="true" keyProperty="id">
+    insert into EfficiencyOfLine
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productionLineId != null">
+        production_line_id,
+      </if>
+      <if test="styleName != null">
+        style_name,
+      </if>
+      <if test="efficiency != null">
+        efficiency,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="productionLineId != null">
+        #{productionLineId,jdbcType=INTEGER},
+      </if>
+      <if test="styleName != null">
+        #{styleName,jdbcType=VARCHAR},
+      </if>
+      <if test="efficiency != null">
+        #{efficiency,jdbcType=DECIMAL},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="top.seiei.saasaps.bean.EfficiencyOfLine" useGeneratedKeys="true" keyProperty="id">
+    update EfficiencyOfLine
+    <set>
+      <if test="productionLineId != null">
+        production_line_id = #{productionLineId,jdbcType=INTEGER},
+      </if>
+      <if test="styleName != null">
+        style_name = #{styleName,jdbcType=VARCHAR},
+      </if>
+      <if test="efficiency != null">
+        efficiency = #{efficiency,jdbcType=DECIMAL},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="top.seiei.saasaps.bean.EfficiencyOfLine">
+    update EfficiencyOfLine
+    set production_line_id = #{productionLineId,jdbcType=INTEGER},
+      style_name = #{styleName,jdbcType=VARCHAR},
+      efficiency = #{efficiency,jdbcType=DECIMAL},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByLineId" parameterType="integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    EfficiencyOfLine
+    where
+    production_line_id = #{lineId}
+  </select>
+  <select id="selectByLineIdAndStyleName" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from
+    EfficiencyOfLine
+    where
+    production_line_id = #{lineId}
+    and
+    style_name = #{styleName}
+  </select>
+</mapper>

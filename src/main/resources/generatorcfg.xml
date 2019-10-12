@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+	<properties resource="properties/jdbc.properties"></properties>
+	<!-- mybatis-generator:generate -->
+	<context id="context" targetRuntime="MyBatis3">
+		<plugin
+			type="org.mybatis.generator.plugins.EqualsHashCodePlugin"></plugin>
+		<plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>
+		<plugin type="org.mybatis.generator.plugins.ToStringPlugin"></plugin>
+
+		<commentGenerator>
+			<!-- 用于表示生成的注释中是否包含有生成日期，true 表示抑制生成 -->
+			<property name="suppressDate" value="true" />
+			<!-- 是否去除自动生成注释 -->
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+
+		<!-- 数据库的链接URL，用户名，密码 -->
+		<jdbcConnection
+			driverClass="${dataSource.driver}"
+			connectionURL="${dataSource.url}"
+			userId="${dataSource.username}" password="${dataSource.password}"></jdbcConnection>
+
+		<!-- 注意一点，默认会先尝试使用Integer，Long，Short等来对应DECIMAL和 NUMERIC数据类型 -->
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<!-- 生成模型的包名及位置 -->
+		<javaModelGenerator
+			targetPackage="top.seiei.saasaps.bean"
+			targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+		<!-- 生成映射文件的包名及位置 -->
+		<sqlMapGenerator
+			targetPackage="mapper"
+			targetProject="src/main/resources">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+		<!-- 生成DAO的包名及位置 -->
+		<javaClientGenerator
+			targetPackage="top.seiei.saasaps.dao" type="XMLMAPPER"
+			targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+<!--		<table tableName="UserMsg" domainObjectName="User" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="UserGroup" domainObjectName="UserGroup" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="ProductionLineRight" domainObjectName="ProductionLineRight" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="ProductionLine" domainObjectName="ProductionLine" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="PeopleNumOfLine" domainObjectName="PeopleNumOfLine" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="WorkhoursOfLine" domainObjectName="WorkhoursOfLine" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="EfficiencyOfLine" domainObjectName="EfficiencyOfLine" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="ProductClass" domainObjectName="ProductClass" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="ProductStyle" domainObjectName="ProductStyle" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="ProductionPlanning" domainObjectName="ProductionPlanning" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+		<table tableName="ProductionPlanningDetail" domainObjectName="ProductionPlanningDetail" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="Festival" domainObjectName="Festival" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="WorkingDateSetting" domainObjectName="WorkingDateSetting" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="ProductClassEfficiency" domainObjectName="ProductClassEfficiency" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
+
+        <table tableName="ProductClass" domainObjectName="ProductClass" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="ProductClassEfficiency" domainObjectName="ProductClassEfficiency" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+	</context>
+</generatorConfiguration>

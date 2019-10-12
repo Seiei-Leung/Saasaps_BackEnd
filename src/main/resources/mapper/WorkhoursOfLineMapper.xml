@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.seiei.saasaps.dao.WorkhoursOfLineMapper">
+  <resultMap id="BaseResultMap" type="top.seiei.saasaps.bean.WorkhoursOfLine">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="production_line_id" jdbcType="INTEGER" property="productionLineId" />
+    <result column="workhours" jdbcType="DECIMAL" property="workhours" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, production_line_id, workhours, start_time, end_time, update_user_id, create_time, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from WorkhoursOfLine
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from WorkhoursOfLine
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="top.seiei.saasaps.bean.WorkhoursOfLine">
+    insert into WorkhoursOfLine (id, production_line_id, workhours, 
+      start_time, end_time, update_user_id, 
+      create_time, update_time)
+    values (#{id,jdbcType=INTEGER}, #{productionLineId,jdbcType=INTEGER}, #{workhours,jdbcType=DOUBLE}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="top.seiei.saasaps.bean.WorkhoursOfLine" useGeneratedKeys="true" keyProperty="id">
+    insert into WorkhoursOfLine
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productionLineId != null">
+        production_line_id,
+      </if>
+      <if test="workhours != null">
+        workhours,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="productionLineId != null">
+        #{productionLineId,jdbcType=INTEGER},
+      </if>
+      <if test="workhours != null">
+        #{workhours,jdbcType=DOUBLE},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="top.seiei.saasaps.bean.WorkhoursOfLine">
+    update WorkhoursOfLine
+    <set>
+      <if test="productionLineId != null">
+        production_line_id = #{productionLineId,jdbcType=INTEGER},
+      </if>
+      <if test="workhours != null">
+        workhours = #{workhours,jdbcType=DOUBLE},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="top.seiei.saasaps.bean.WorkhoursOfLine">
+    update WorkhoursOfLine
+    set production_line_id = #{productionLineId,jdbcType=INTEGER},
+      workhours = #{workhours,jdbcType=DOUBLE},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectWorkHoursByTime" parameterType="map" resultMap="BaseResultMap">
+      select
+    <include refid="Base_Column_List"/>
+      from
+      workhoursofline
+      where
+      production_line_id = #{lineId}
+      and
+      start_time &lt; #{date}
+      and
+      #{date} &lt; end_time
+  </select>
+  <select id="selectWorkHoursByRecentTime" resultMap="BaseResultMap" parameterType="integer">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        workhoursofline
+        where
+        production_line_id = #{lineId}
+        and
+        end_time
+        =
+        (select Max(end_time) from workhoursofline)
+    </select>
+  <select id="selectByLineId" resultMap="BaseResultMap" parameterType="integer">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    workhoursofline
+    where
+    production_line_id = #{lineId}
+    order by
+    start_time
+  </select>
+</mapper>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.seiei.saasaps.dao.WorkingDateSettingMapper">
+  <resultMap id="BaseResultMap" type="top.seiei.saasaps.bean.WorkingDateSetting">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="effective_year" jdbcType="INTEGER" property="effectiveYear" />
+    <result column="monday" jdbcType="BIT" property="monday" />
+    <result column="tuesday" jdbcType="BIT" property="tuesday" />
+    <result column="wednesday" jdbcType="BIT" property="wednesday" />
+    <result column="thursday" jdbcType="BIT" property="thursday" />
+    <result column="friday" jdbcType="BIT" property="friday" />
+    <result column="saturday" jdbcType="BIT" property="saturday" />
+    <result column="sunday" jdbcType="BIT" property="sunday" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, effective_year, monday, tuesday, wednesday, thursday, friday, saturday, sunday, update_user_id, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from WorkingDateSetting
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from WorkingDateSetting
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="top.seiei.saasaps.bean.WorkingDateSetting">
+    insert into WorkingDateSetting (id, effective_year, monday, 
+      tuesday, wednesday, thursday, friday, 
+      saturday, sunday, update_user_id, create_time,
+      update_time)
+    values (#{id,jdbcType=INTEGER}, #{effectiveYear,jdbcType=INTEGER}, #{monday,jdbcType=BIT}, 
+      #{tuesday,jdbcType=BIT}, #{wednesday,jdbcType=BIT}, #{thursday,jdbcType=BIT}, #{friday,jdbcType=BIT}, 
+      #{saturday,jdbcType=BIT}, #{sunday,jdbcType=BIT}, #{updateUserId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="top.seiei.saasaps.bean.WorkingDateSetting" useGeneratedKeys="true" keyProperty="id">
+    insert into WorkingDateSetting
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="effectiveYear != null">
+        effective_year,
+      </if>
+      <if test="monday != null">
+        monday,
+      </if>
+      <if test="tuesday != null">
+        tuesday,
+      </if>
+      <if test="wednesday != null">
+        wednesday,
+      </if>
+      <if test="thursday != null">
+        thursday,
+      </if>
+      <if test="friday != null">
+        friday,
+      </if>
+      <if test="saturday != null">
+        saturday,
+      </if>
+      <if test="sunday != null">
+        sunday,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="effectiveYear != null">
+        #{effectiveYear,jdbcType=INTEGER},
+      </if>
+      <if test="monday != null">
+        #{monday,jdbcType=BIT},
+      </if>
+      <if test="tuesday != null">
+        #{tuesday,jdbcType=BIT},
+      </if>
+      <if test="wednesday != null">
+        #{wednesday,jdbcType=BIT},
+      </if>
+      <if test="thursday != null">
+        #{thursday,jdbcType=BIT},
+      </if>
+      <if test="friday != null">
+        #{friday,jdbcType=BIT},
+      </if>
+      <if test="saturday != null">
+        #{saturday,jdbcType=BIT},
+      </if>
+      <if test="sunday != null">
+        #{sunday,jdbcType=BIT},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="top.seiei.saasaps.bean.WorkingDateSetting">
+    update WorkingDateSetting
+    <set>
+      <if test="effectiveYear != null">
+        effective_year = #{effectiveYear,jdbcType=INTEGER},
+      </if>
+      <if test="monday != null">
+        monday = #{monday,jdbcType=BIT},
+      </if>
+      <if test="tuesday != null">
+        tuesday = #{tuesday,jdbcType=BIT},
+      </if>
+      <if test="wednesday != null">
+        wednesday = #{wednesday,jdbcType=BIT},
+      </if>
+      <if test="thursday != null">
+        thursday = #{thursday,jdbcType=BIT},
+      </if>
+      <if test="friday != null">
+        friday = #{friday,jdbcType=BIT},
+      </if>
+      <if test="saturday != null">
+        saturday = #{saturday,jdbcType=BIT},
+      </if>
+      <if test="sunday != null">
+        sunday = #{sunday,jdbcType=BIT},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="top.seiei.saasaps.bean.WorkingDateSetting">
+    update WorkingDateSetting
+    set effective_year = #{effectiveYear,jdbcType=INTEGER},
+      monday = #{monday,jdbcType=BIT},
+      tuesday = #{tuesday,jdbcType=BIT},
+      wednesday = #{wednesday,jdbcType=BIT},
+      thursday = #{thursday,jdbcType=BIT},
+      friday = #{friday,jdbcType=BIT},
+      saturday = #{saturday,jdbcType=BIT},
+      sunday = #{sunday,jdbcType=BIT},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    workingdatesetting
+  </select>
+  <select id="selectByYear" resultMap="BaseResultMap" parameterType="integer">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    workingdatesetting
+    where
+    effective_year = #{year}
+  </select>
+</mapper>

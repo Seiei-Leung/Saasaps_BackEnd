@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.seiei.saasaps.dao.FestivalMapper">
+  <resultMap id="BaseResultMap" type="top.seiei.saasaps.bean.Festival">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="working_date_setting_id" jdbcType="INTEGER" property="factoryCalendarId" />
+    <result column="festival_name" jdbcType="VARCHAR" property="festivalName" />
+    <result column="begin_date" jdbcType="TIMESTAMP" property="beginDate" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, working_date_setting_id, festival_name, begin_date, end_date, update_user_id, 
+    create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from Festival
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from Festival
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="top.seiei.saasaps.bean.Festival">
+    insert into Festival (id, working_date_setting_id, festival_name, 
+      begin_date, end_date, update_user_id, 
+      create_time, update_time)
+    values (#{id,jdbcType=INTEGER}, #{factoryCalendarId,jdbcType=INTEGER}, #{festivalName,jdbcType=VARCHAR}, 
+      #{beginDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="top.seiei.saasaps.bean.Festival" useGeneratedKeys="true" keyProperty="id">
+    insert into Festival
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="factoryCalendarId != null">
+        working_date_setting_id,
+      </if>
+      <if test="festivalName != null">
+        festival_name,
+      </if>
+      <if test="beginDate != null">
+        begin_date,
+      </if>
+      <if test="endDate != null">
+        end_date,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="factoryCalendarId != null">
+        #{factoryCalendarId,jdbcType=INTEGER},
+      </if>
+      <if test="festivalName != null">
+        #{festivalName,jdbcType=VARCHAR},
+      </if>
+      <if test="beginDate != null">
+        #{beginDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="top.seiei.saasaps.bean.Festival">
+    update Festival
+    <set>
+      <if test="factoryCalendarId != null">
+        working_date_setting_id = #{factoryCalendarId,jdbcType=INTEGER},
+      </if>
+      <if test="festivalName != null">
+        festival_name = #{festivalName,jdbcType=VARCHAR},
+      </if>
+      <if test="beginDate != null">
+        begin_date = #{beginDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        end_date = #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="top.seiei.saasaps.bean.Festival">
+    update Festival
+    set working_date_setting_id = #{factoryCalendarId,jdbcType=INTEGER},
+      festival_name = #{festivalName,jdbcType=VARCHAR},
+      begin_date = #{beginDate,jdbcType=TIMESTAMP},
+      end_date = #{endDate,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByWorkingSettingId" resultMap="BaseResultMap" parameterType="Integer">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    festival
+    where working_date_setting_id = #{id}
+  </select>
+  <delete id="deleteByWorkingSettingId" parameterType="Integer">
+      delete
+      from
+      festival
+      where
+      working_date_setting_id = #{id}
+  </delete>
+</mapper>
