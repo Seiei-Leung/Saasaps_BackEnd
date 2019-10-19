@@ -1,9 +1,9 @@
 package top.seiei.saasaps.service;
+import java.text.ParseException;
+import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.core.jmx.Server;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import top.seiei.saasaps.bean.Festival;
 import top.seiei.saasaps.bean.User;
 import top.seiei.saasaps.bean.WorkingDateSetting;
@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
-@Service("workingDateSettingService")
+@Service("factoryCalendarService")
 public class FactoryCalendarService {
 
     @Resource
@@ -144,6 +144,14 @@ public class FactoryCalendarService {
         ) {
             return ServerResponse.createdByError("参数错误");
         }
+        try {
+            if (DateUtil.getFirstDayOfYear(workingDateSetting.getEffectiveYear()).getTime() > beginDate) {
+                return ServerResponse.createdByError("设置的日期年份发生冲突");
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return ServerResponse.createdByError(e.toString());
+        }
         if (beginDate > endDate) {
             return ServerResponse.createdByError("结束日期不能早于起始日期");
         }
@@ -172,6 +180,10 @@ public class FactoryCalendarService {
      * @return
      */
     public ServerResponse updateFestival(User user, Integer id, String festivalName, Long beginDate, Long endDate) {
+        Festival festival1Temp = festivalMapper.selectByPrimaryKey(id);
+        if (festival1Temp == null) {
+            return ServerResponse.createdByError("查无该信息");
+        }
         if (
                 StringUtils.isBlank(festivalName) ||
                         beginDate == null ||
@@ -179,12 +191,17 @@ public class FactoryCalendarService {
         ) {
             return ServerResponse.createdByError("参数错误");
         }
+        WorkingDateSetting workingDateSetting = workingDateSettingMapper.selectByPrimaryKey(festival1Temp.getFactoryCalendarId());
+        try {
+            if (DateUtil.getFirstDayOfYear(workingDateSetting.getEffectiveYear()).getTime() > beginDate) {
+                return ServerResponse.createdByError("设置的日期年份有冲突");
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return ServerResponse.createdByError(e.toString());
+        }
         if (beginDate > endDate) {
             return ServerResponse.createdByError("结束日期不能早于起始日期");
-        }
-        Festival festival1Temp = festivalMapper.selectByPrimaryKey(id);
-        if (festival1Temp == null) {
-            return ServerResponse.createdByError("查无该信息");
         }
         festival1Temp.setFestivalName(festivalName);
         festival1Temp.setBeginDate(DateUtil.zeroSetting(new Date(beginDate)));
@@ -213,5 +230,37 @@ public class FactoryCalendarService {
             return ServerResponse.createdByError("删除失败");
         }
         return ServerResponse.createdBySuccessMessage("删除成功");
+    }
+
+    /**
+     * 排产器获取工厂日历
+     * @param yearList 年份列表
+     * @return
+     */
+    public ServerResponse getFactoryCalendarByYear(List<Integer> yearList) {
+        if (yearList.size() == 0) {
+            return ServerResponse.createdByError("输入参数不能为空");
+        }
+        List<WorkingDateSettingVO> resultList = new ArrayList<>();
+        for (Integer year : yearList) {
+            WorkingDateSetting workingDateSetting = workingDateSettingMapper.selectByYear(year);
+            if (workingDateSetting == null) {
+                return ServerResponse.createdByError(year + "年份的工厂日历尚没有定义");
+            }
+            List<Festival> festivalList = festivalMapper.selectByWorkingSettingId(workingDateSetting.getId());
+            WorkingDateSettingVO workingDateSettingVO = new WorkingDateSettingVO();
+            workingDateSettingVO.setId(workingDateSetting.getId());
+            workingDateSettingVO.setYear(year);
+            workingDateSettingVO.setMonday(workingDateSetting.getMonday());
+            workingDateSettingVO.setTuesday(workingDateSetting.getTuesday());
+            workingDateSettingVO.setWednesday(workingDateSetting.getWednesday());
+            workingDateSettingVO.setThursday(workingDateSetting.getWednesday());
+            workingDateSettingVO.setFriday(workingDateSetting.getFriday());
+            workingDateSettingVO.setSaturday(workingDateSetting.getSaturday());
+            workingDateSettingVO.setSunday(workingDateSetting.getSunday());
+            workingDateSettingVO.setFestivalList(festivalList);
+            resultList.add(workingDateSettingVO);
+        }
+        return ServerResponse.createdBySuccess(resultList);
     }
 }

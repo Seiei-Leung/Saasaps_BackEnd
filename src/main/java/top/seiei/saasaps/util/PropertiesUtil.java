@@ -42,6 +42,19 @@ public class PropertiesUtil {
         return result.trim();
     }
 
+    /**
+     * 读取数字类型的键值
+     * @param key 键
+     * @return
+     */
+    public static Integer getIntegerProperty(String key) {
+        String result = prop.getProperty(key.trim());
+        if (StringUtils.isBlank(result)) {
+            return null;
+        }
+        return Integer.parseInt(result.trim());
+    }
+
 
     /**
      * 读取键值，设置默认值返回

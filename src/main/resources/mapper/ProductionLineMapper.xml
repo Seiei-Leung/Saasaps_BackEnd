@@ -168,7 +168,7 @@
     and
     isInvalid = '0'
   </select>
-  <select id="selectByPrimaryKeyList" resultMap="BaseResultMap" parameterType="list">
+  <select id="selectByPrimaryKeyList" resultMap="BaseResultMap" parameterType="List">
     select
     <include refid="Base_Column_List"/>
     from
@@ -177,7 +177,7 @@
     isInvalid = '0'
     and
     id in
-    <foreach collection="idList" item="item" index="index" open="(" separator="," close=")">
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
       #{item}
     </foreach>
     order by

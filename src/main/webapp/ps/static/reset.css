@@ -1,0 +1,24 @@
+/*
+    重置浏览器默认样式
+*/
+*{margin:0px;padding:0px;}
+body{font-family:'Microsoft YaHei',Arial,sans-serif;line-height:1}
+img{border:none;}
+input,
+select,
+textarea,
+button{outline: none;border:none;}
+button:hover{cursor:pointer;}
+textarea{resize:none;}
+a{text-decoration:none;color:#000000;}/* 链接颜色 */
+li{list-style-type:none;}
+i{font-style:normal;-webkit-user-select: none;}
+.fl{float:left;}
+.fr{float:right;}
+.hid {display: none !important;}
+.clear{clear:both;}
+.clearfix:after{display: block;content:'';height: 0;line-height: 0;clear: both;visibility: hidden;}
+.zIndexSuper{z-index: 20;}
+.zIndexTop{z-index: 10;}
+.zIndexMiddle{z-index: 0;}
+.zIndexLow{z-index: -10;}

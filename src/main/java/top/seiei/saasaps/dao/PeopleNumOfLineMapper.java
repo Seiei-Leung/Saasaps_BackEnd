@@ -21,7 +21,7 @@ public interface PeopleNumOfLineMapper {
 
     PeopleNumOfLine selectPeopleNumByTime(@Param("lineId") Integer lineId, @Param("date") Date date);
 
-    PeopleNumOfLine selectPeopleNumByRecentTime(Integer lineId);
-
     List<PeopleNumOfLine> selectByLineId(Integer lineId);
+
+    List<PeopleNumOfLine> selectByLineIdAndTime(@Param("lineId") Integer lineId, @Param("time") Date time);
 }

@@ -24,4 +24,6 @@ public interface WorkhoursOfLineMapper {
     WorkhoursOfLine selectWorkHoursByRecentTime(Integer lineId);
 
     List<WorkhoursOfLine> selectByLineId(Integer lineId);
+
+    List<WorkhoursOfLine> selectByLineIdAndTime(@Param("lineId") Integer lineId, @Param("time") Date time);
 }

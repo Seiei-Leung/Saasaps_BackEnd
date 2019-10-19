@@ -12,6 +12,8 @@ import top.seiei.saasaps.service.FactoryCalendarService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/factoryCalendar/")
@@ -142,4 +144,20 @@ public class FactoryCalendarController {
         }
         return factoryCalendarService.deleteFestival(id);
     }
+
+    /**
+     * 排产器获取工厂日历
+     * @param yearList 年份列表
+     * @return
+     */
+    @RequestMapping("getFactoryCalendarByYear")
+    @ResponseBody
+    public ServerResponse getFactoryCalendarByYear(String yearList) {
+        List<Integer> years = new ArrayList<>();
+        for (String item : yearList.split(",")) {
+            years.add(Integer.parseInt(item));
+        }
+        return factoryCalendarService.getFactoryCalendarByYear(years);
+    }
+
 }

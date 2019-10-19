@@ -1,7 +1,9 @@
 package top.seiei.saasaps.dao;
 
+import org.apache.ibatis.annotations.Param;
 import top.seiei.saasaps.bean.ProductionPlanningDetail;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ProductionPlanningDetailMapper {
@@ -17,7 +19,9 @@ public interface ProductionPlanningDetailMapper {
 
     int updateByPrimaryKey(ProductionPlanningDetail record);
 
-    List<ProductionPlanningDetail> selectAllToDo();
+    List<ProductionPlanningDetail> selectBySummaryId(Integer id);
 
-    List<ProductionPlanningDetail>  selectByProductionPlanningId(Integer id);
+    int deleteBySummaryId(Integer id);
+
+    List<ProductionPlanningDetail> selectByLineIdAndTime(@Param("id") Integer id, @Param("time") Date time);
 }

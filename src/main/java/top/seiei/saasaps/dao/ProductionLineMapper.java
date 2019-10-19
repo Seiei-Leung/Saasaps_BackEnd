@@ -22,7 +22,7 @@ public interface ProductionLineMapper {
 
     ProductionLine selectByName(@Param("workGroup") String workGroup, @Param("workShop") String workShop, @Param("line") String line);
 
-    List<ProductionLine> selectByPrimaryKeyList(List<Integer> idList);
+    List<ProductionLine> selectByPrimaryKeyList(@Param("list") List<Integer> list);
 
     int selectCountByPrimaryKey(Integer id);
 }

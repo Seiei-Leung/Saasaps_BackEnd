@@ -132,22 +132,12 @@
       from
       peoplenumofline
       where
-      start_time &lt; #{date}
+      start_time &lt;= #{date}
       and
       #{date} &lt; end_time
       and
       production_line_id = #{lineId}
   </select>
-  <select id="selectPeopleNumByRecentTime" resultMap="BaseResultMap" parameterType="Integer">
-        select
-        <include refid="Base_Column_List"/>
-        from
-        peoplenumofline
-        where
-        end_time = (select Max(end_time) from peoplenumofline)
-        and
-        production_line_id = #{lineId}
-    </select>
   <select id="selectByLineId" resultMap="BaseResultMap" parameterType="integer">
     select
     <include refid="Base_Column_List"/>
@@ -155,6 +145,18 @@
     peoplenumofline
     where
     production_line_id = #{lineId}
+    order by
+    start_time
+  </select>
+  <select id="selectByLineIdAndTime" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    peoplenumofline
+    where
+    production_line_id = #{lineId}
+    and
+    start_time &gt;= #{time}
     order by
     start_time
   </select>

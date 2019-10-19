@@ -4,11 +4,14 @@ import top.seiei.saasaps.bean.Festival;
 
 import java.util.List;
 
+/**
+ * 用于 Post 工厂日历
+ */
 public class WorkingDateSettingVO {
 
     private Integer id;
 
-    private Integer effectiveYear;
+    private Integer year;
 
     private Boolean monday;
 
@@ -34,12 +37,12 @@ public class WorkingDateSettingVO {
         this.id = id;
     }
 
-    public Integer getEffectiveYear() {
-        return effectiveYear;
+    public Integer getYear() {
+        return year;
     }
 
-    public void setEffectiveYear(Integer effectiveYear) {
-        this.effectiveYear = effectiveYear;
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
     public Boolean getMonday() {

@@ -20,4 +20,5 @@ public interface FestivalMapper {
     List<Festival> selectByWorkingSettingId(Integer id);
 
     int deleteByWorkingSettingId(Integer id);
+
 }

@@ -1,20 +1,31 @@
 package top.seiei.saasaps.service;
 import java.math.BigDecimal;
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.Date;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import top.seiei.saasaps.bean.EfficiencyOfLine;
-import top.seiei.saasaps.bean.ProductClass;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import top.seiei.saasaps.bean.ProductionPlanningDetail;
+import top.seiei.saasaps.bean.SummaryOfProductionPlanningDetail;
+import top.seiei.saasaps.bean.User;
 import top.seiei.saasaps.common.ServerResponse;
 import top.seiei.saasaps.dao.ProductionPlanningDetailMapper;
-import top.seiei.saasaps.util.BigDecimalUtils;
-import top.seiei.saasaps.vo.ProductionLineVO;
-import top.seiei.saasaps.vo.ProductionPlanningDetailVO;
-
+import top.seiei.saasaps.dao.SummaryOfProductionPlanningDetailMapper;
+import top.seiei.saasaps.util.DateUtil;
+import top.seiei.saasaps.util.ExcelUtil;
+import top.seiei.saasaps.util.PropertiesUtil;
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.poi.ss.usermodel.*;
+import top.seiei.saasaps.util.StringUtil;
+
 
 @Service("productionPlanningDetailService")
 public class ProductionPlanningDetailService {
@@ -23,92 +34,172 @@ public class ProductionPlanningDetailService {
     private ProductionPlanningDetailMapper productionPlanningDetailMapper;
 
     @Resource
-    private ProductClassService productClassService;
-
-    @Resource
-    private ProductionLineService productionLineService;
+    private SummaryOfProductionPlanningDetailMapper summaryOfProductionPlanningDetailMapper;
 
     /**
-     * 获取所有没有添加到进度的生产计划详情
-     * @return 生产计划详情列表
+     * 导入 excel
+     * @param user 用户信息
+     * @param excelFile excel 文件
+     * @return
+     * @throws Exception
      */
-    public ServerResponse selectAllToDo() {
-        List<ProductionPlanningDetail> productionPlanningDetail = productionPlanningDetailMapper.selectAllToDo();
-        return ServerResponse.createdBySuccess(productionPlanningDetail);
+    @Transactional(rollbackFor=Exception.class)
+    public ServerResponse uploadExcel(User user, MultipartFile excelFile) throws Exception {
+        String billNo = getBillNo();
+        if (excelFile != null) {
+            // 获取文件的扩展名
+            String ext = FilenameUtils.getExtension(excelFile.getOriginalFilename()); // 图片文件后缀名
+            if (!StringUtils.equals(ext, ExcelUtil.OFFICE_EXCEL_XLS) && !StringUtils.equals(ext, ExcelUtil.OFFICE_EXCEL_XLSX)) {
+                return ServerResponse.createdByError("上传文件的格式不正确");
+            }
+            try {
+                String pathName = PropertiesUtil.getProperty("uploadExcelPath") + billNo + "." + ext;
+                excelFile.transferTo(new File(pathName));
+                Sheet sheet = ExcelUtil.getSheet(pathName, 0); // sheet 表
+                int rowCount = sheet.getLastRowNum(); // 表格的总行数
+                SummaryOfProductionPlanningDetail summaryOfProductionPlanningDetail = new SummaryOfProductionPlanningDetail();
+                summaryOfProductionPlanningDetail.setBillno(billNo);
+                summaryOfProductionPlanningDetail.setUpdateUserId(user.getId());
+                summaryOfProductionPlanningDetail.setUpdateTime(new Date());
+                summaryOfProductionPlanningDetail.setCreateTime(new Date());
+                summaryOfProductionPlanningDetailMapper.insertSelective(summaryOfProductionPlanningDetail);
+                for (int rowIndex=1; rowIndex<rowCount; rowIndex++) {
+                    Row rowItem = sheet.getRow(rowIndex);
+                    ProductionPlanningDetail productionPlanningDetail = new ProductionPlanningDetail();
+                    productionPlanningDetail.setSummaryid(summaryOfProductionPlanningDetail.getId());
+                    productionPlanningDetail.setSeason(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.season")));
+                    productionPlanningDetail.setClientname(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.clientName")));
+                    productionPlanningDetail.setClientstyleno(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.clientStyleNo")));
+                    productionPlanningDetail.setOrderno(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.orderNo")));
+                    productionPlanningDetail.setOrdernum(ExcelUtil.getIntegerCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.orderNum")));
+                    productionPlanningDetail.setOrderkind(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.orderKind")));
+                    productionPlanningDetail.setStyleno(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.styleNo")));
+                    productionPlanningDetail.setGoodname(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.goodName")));
+                    productionPlanningDetail.setStyle(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.style")));
+                    productionPlanningDetail.setDeliveryofcontractTime(ExcelUtil.getDateCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.deliveryOfContract_time")));
+                    productionPlanningDetail.setDeliveryoffactoryTime(ExcelUtil.getDateCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.deliveryOfFactory_time")));
+                    productionPlanningDetail.setArrivewarehouseTime(ExcelUtil.getDateCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.arriveWarehouse_time")));
+                    productionPlanningDetail.setQtyofbatcheddelivery(ExcelUtil.getIntegerCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.qtyOfBatchedDelivery")));
+                    productionPlanningDetail.setLining(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.lining")));
+                    productionPlanningDetail.setLiningofstitchingTime(ExcelUtil.getDateCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.liningOfStitching_time")));
+                    productionPlanningDetail.setSuppliesoflining(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.suppliesOfLining")));
+                    productionPlanningDetail.setClothTime(ExcelUtil.getDateCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.cloth_time")));
+                    if (ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.sam")) == null) {
+                        productionPlanningDetail.setSam(null);
+                    } else {
+                        productionPlanningDetail.setSam(new BigDecimal(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.sam"))));
+                    }
+                    if (ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.samOfLocal")) == null) {
+                        productionPlanningDetail.setSamoflocal(null);
+                    } else {
+                        productionPlanningDetail.setSamoflocal(new BigDecimal(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.samOfLocal"))));
+                    }
+                    if (ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.sah")) == null) {
+                        productionPlanningDetail.setSah(null);
+                    } else {
+                        productionPlanningDetail.setSah(new BigDecimal(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.sah"))));
+                    }
+                    productionPlanningDetail.setApproveTime(ExcelUtil.getDateCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.approve_time")));
+                    productionPlanningDetail.setEmbroider(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.embroider")));
+                    productionPlanningDetail.setEmbroiderDaynum(ExcelUtil.getIntegerCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.embroider_dayNum")));
+                    productionPlanningDetail.setEmbroiderTime(ExcelUtil.getDateCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.embroider_time")));
+                    productionPlanningDetail.setFactoryEmbroider(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.factory_embroider")));
+                    productionPlanningDetail.setFactoryEmbroider2(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.factory_embroider2")));
+                    productionPlanningDetail.setPrintafterembroider(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.printAfterembroider")));
+                    productionPlanningDetail.setPrintafterembroiderDaynum(ExcelUtil.getIntegerCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.printAfterembroider_dayNum")));
+                    productionPlanningDetail.setFactoryPrint(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.factory_print")));
+                    productionPlanningDetail.setFactoryPrint2(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.factory_print2")));
+                    productionPlanningDetail.setBackpartDaynum(ExcelUtil.getIntegerCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.backPart_dayNum")));
+                    productionPlanningDetail.setMemo(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.memo")));
+                    productionPlanningDetail.setCuttingqty(ExcelUtil.getIntegerCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.cuttingQty")));
+                    productionPlanningDetail.setAdvancecuttingDaynum(ExcelUtil.getIntegerCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.advanceCutting_dayNum")));
+
+                    productionPlanningDetail.setIsPlanning(false);
+                    productionPlanningDetail.setIsFinishCutting(false);
+                    productionPlanningDetail.setUpdateUserId(user.getId());
+                    productionPlanningDetail.setCreateTime(new Date());
+                    productionPlanningDetail.setUpdateTime(new Date());
+                    int result = productionPlanningDetailMapper.insertSelective(productionPlanningDetail);
+                    if (result == 0) {
+                        throw new Exception("插入数据错误，事务回滚");
+                    }
+                }
+                return ServerResponse.createdBySuccess(summaryOfProductionPlanningDetail);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ServerResponse.createdByError(e.getMessage());
+            }
+        } else {
+            return ServerResponse.createdByError("Excel 文件不能为空");
+        }
     }
 
     /**
-     * 根据生产计划主要信息的 ID 获取生产计划详情
-     * @param id 生产计划的 ID
-     * @return 生产计划详情
+     * 根据主表 Id 获取详情列表
+     * @param id 主表 Id
+     * @return
      */
-/*    public ServerResponse selectByProductionPlanningId(Integer id) {
-        List<ProductionPlanningDetail> productionPlanningDetailList = productionPlanningDetailMapper.selectByProductionPlanningId(id);
-        List<ProductionPlanningDetailVO> productionPlanningDetailVOList = new ArrayList<>();
-        for (ProductionPlanningDetail item : productionPlanningDetailList) {
-            ServerResponse<ProductionPlanningDetailVO> serverResponse = assembleProductionPlanningDetailVO(item);
-            if (!serverResponse.isSuccess()) {
-                return serverResponse;
-            }
-            productionPlanningDetailVOList.add(serverResponse.getData());
+    public ServerResponse getDetailBySummaryId(Integer id) {
+        SummaryOfProductionPlanningDetail summaryOfProductionPlanningDetail = summaryOfProductionPlanningDetailMapper.selectByPrimaryKey(id);
+        if (summaryOfProductionPlanningDetail == null) {
+            return ServerResponse.createdByError("没有对应的信息");
         }
-        return ServerResponse.createdBySuccess(productionPlanningDetailVOList);
-    }*/
+        List<ProductionPlanningDetail> productionPlanningDetailList = productionPlanningDetailMapper.selectBySummaryId(id);
+        return ServerResponse.createdBySuccess(productionPlanningDetailList);
+    }
 
     /**
-     * 根据排产详情信息主键 ID 获取排产详情信息
-     * @param id 排产详情主键 ID
-     * @return 排产详情信息
+     * 更新详情
+     * @param user 用户信息
+     * @param productionPlanningDetail 详情信息
+     * @return
      */
-/*    public ServerResponse<ProductionPlanningDetailVO> selectByPrimaryKey(Integer id) {
-        ProductionPlanningDetail productionPlanningDetail = productionPlanningDetailMapper.selectByPrimaryKey(id);
-        return assembleProductionPlanningDetailVO(productionPlanningDetail);
-    }*/
+    public ServerResponse updateDetail(User user, ProductionPlanningDetail productionPlanningDetail) {
+        ProductionPlanningDetail productionPlanningDetailTemp = productionPlanningDetailMapper.selectByPrimaryKey(productionPlanningDetail.getId());
+        if (productionPlanningDetailTemp == null) {
+            return ServerResponse.createdByError("查无该详情信息");
+        }
+        productionPlanningDetail.setUpdateUserId(user.getId());
+        productionPlanningDetail.setUpdateTime(new Date());
+        int result = productionPlanningDetailMapper.updateByPrimaryKeySelective(productionPlanningDetail);
+        if (result == 0) {
+            return ServerResponse.createdByError("更新失败");
+        }
+        return ServerResponse.createdBySuccessMessage("更新成功");
+    }
 
     /**
-     * ProductionPlanningDetail 转化为 ProductionPlanningVO 对象
-     * @param productionPlanningDetail ProductionPlanningDetail 对象
-     * @return ServerResponse<ProductionPlanningVO>
+     * 删除详情
+     * @param id 主键
+     * @return
      */
-/*    public ServerResponse<ProductionPlanningDetailVO> assembleProductionPlanningDetailVO(ProductionPlanningDetail productionPlanningDetail) {
-        ProductionPlanningDetailVO productionPlanningDetailVO = new ProductionPlanningDetailVO();
-        productionPlanningDetailVO.setId(productionPlanningDetail.getId());
-        productionPlanningDetailVO.setProductionPlanningId(productionPlanningDetail.getProductionPlanningId());
-        productionPlanningDetailVO.setCustname(productionPlanningDetail.getCustname());
-        productionPlanningDetailVO.setGoodName(productionPlanningDetail.getGoodName());
-        productionPlanningDetailVO.setOrdernum(productionPlanningDetail.getOrdernum());
-        productionPlanningDetailVO.setSeason(productionPlanningDetail.getSeason());
-        productionPlanningDetailVO.setColor(productionPlanningDetail.getColor());
-        productionPlanningDetailVO.setQtyPlan(productionPlanningDetail.getQtyPlan());
-        productionPlanningDetailVO.setQtyFinish(productionPlanningDetail.getQtyFinish());
-        productionPlanningDetailVO.setProductClassName(productionPlanningDetail.getProductClassName());
-        productionPlanningDetailVO.setLeavingTime(productionPlanningDetail.getLeavingTime());
-        // 计算效率
-        ServerResponse<ProductClass> serverResponseForProductionClassEfficiency = productClassService.getProductClassByProductionClassNameAndQtyPlan(productionPlanningDetail.getProductClassName(), productionPlanningDetail.getQtyPlan());
-        ProductClass productClass;
-        if (!serverResponseForProductionClassEfficiency.isSuccess()) {
-            return ServerResponse.createdByError("没有找到对应的产品类");
+    public ServerResponse deleteById(Integer id) {
+        ProductionPlanningDetail productionPlanningDetailTemp = productionPlanningDetailMapper.selectByPrimaryKey(id);
+        if (productionPlanningDetailTemp == null) {
+            return ServerResponse.createdByError("查无该详情信息");
         }
-        productClass = serverResponseForProductionClassEfficiency.getData();
-        productionPlanningDetailVO.setStyleName(productClass.getStyleName());
-        productionPlanningDetailVO.setProductionClassEfficiency(productClass.getEfficiency());
-        // 默认效率为 1
-        BigDecimal productionLineEfficiency = new BigDecimal("1");
-        ServerResponse<ProductionLineVO> serverResponseForProductionLine = productionLineService.selectByLineId(productionPlanningDetail.getProductionLineId());
-        if (!serverResponseForProductionLine.isSuccess()) {
-            return ServerResponse.createdByError("没有找到对应的生产线");
+        int result = productionPlanningDetailMapper.deleteByPrimaryKey(id);
+        if (result == 0) {
+            return ServerResponse.createdByError("删除失败");
         }
-        List<EfficiencyOfLine> efficiencyOfLineList = serverResponseForProductionLine.getData().getEfficiencyOfLineList();
-        for (EfficiencyOfLine item : efficiencyOfLineList) {
-            if (StringUtils.equals(item.getStyleName(), productClass.getStyleName())) {
-                productionLineEfficiency = new BigDecimal(Double.toString(item.getEfficiency()));
-            }
+        return ServerResponse.createdByError("删除成功");
+    }
+
+
+
+    /**
+     * 获取单号
+     * @return
+     */
+    private String getBillNo() {
+        String billno = "PD" + DateUtil.getBillFormat();
+        List<SummaryOfProductionPlanningDetail> summaryOfProductionPlanningDetailList = summaryOfProductionPlanningDetailMapper.selectByLikeBillNo("%" + billno + "%");
+        if (summaryOfProductionPlanningDetailList.size() == 0) {
+            billno += "001";
+        } else {
+            Integer count = Integer.parseInt(summaryOfProductionPlanningDetailList.get(0).getBillno().substring(8)) + 1;
+            billno = billno + StringUtil.zeroFill(Integer.toString(count), 3);
         }
-        productionPlanningDetailVO.setProductionLineEfficiency(productionLineEfficiency);
-        productionPlanningDetailVO.setEfficiency(BigDecimalUtils.multiply(productionLineEfficiency.doubleValue(), productionPlanningDetailVO.getProductionClassEfficiency().doubleValue()));
-        Double templ = new BigDecimal(serverResponseForProductionLine.getData().getPeopleNum() * serverResponseForProductionLine.getData().getWorkhours()).doubleValue();
-        Integer richan = BigDecimalUtils.multiply(productionPlanningDetailVO.getEfficiency().doubleValue(), templ).intValue();
-        productionPlanningDetailVO.setRichan(richan);
-        return ServerResponse.createdBySuccess(productionPlanningDetailVO);
-    }*/
+        return billno;
+    }
 }

@@ -26,4 +26,27 @@ public class DateUtil {
         }
         return calendar.getTime();
     }
+
+    /**
+     * 获取单号日期格式
+     * @return
+     */
+    public static String getBillFormat() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        return Integer.toString(year).substring(2) + StringUtil.zeroFill(Integer.toString(month), 2) + StringUtil.zeroFill(Integer.toString(day), 2);
+    }
+
+    /**
+     * 获取某年第一天零时零分零点的时间戳
+     * @param year 年
+     * @return
+     */
+    public static Date getFirstDayOfYear(Integer year) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return simpleDateFormat.parse(year + "-01-01 00:00:00");
+    }
+
 }

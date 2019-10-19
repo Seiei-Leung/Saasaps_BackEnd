@@ -29,18 +29,6 @@ public class ProductionLineController {
     }
 
     /**
-     *	 根据用户 ID 获取获取权限生产线
-     * @param session session 对象
-     * @return 权限生产线
-     */
-    @RequestMapping("getByUserId")
-    @ResponseBody
-    public ServerResponse selectAllByUserId(HttpSession session) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-        return productionLineService.selectAllByUserId(user.getId());
-    }
-
-    /**
      * 根据生产线 ID 获取生产线详情
      * @param lineid 生产线 ID
      * @return 生产线详情
@@ -49,17 +37,6 @@ public class ProductionLineController {
     @ResponseBody
     public ServerResponse selectDetailByLineId(Integer lineid) {
         return productionLineService.selectDetailByLineId(lineid);
-    }
-
-    /**
-     *	根据生产线的 ID 获取生产线的详情
-     * @param lineid 生产线的 ID
-     * @return 生产线的详情
-     */
-    @RequestMapping("getByLineId")
-    @ResponseBody
-    public ServerResponse selectByLineId(Integer lineid) {
-        return productionLineService.selectByLineId(lineid);
     }
 
     /**
@@ -221,4 +198,32 @@ public class ProductionLineController {
     public ServerResponse deletePeopleNum(Integer id) {
         return productionLineService.deletePeopleNum(id);
     }
+
+    /**
+     *	 根据用户 ID 获取获取权限生产线
+     * @param session session 对象
+     * @return 权限生产线
+     */
+    @RequestMapping("getByUserId")
+    @ResponseBody
+    public ServerResponse selectAllByUserId(HttpSession session) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        return productionLineService.selectAllByUserId(user.getId(), null);
+    }
+
+    // ---------------------------------------------- 排产器页面 -------------------------------------------------------
+
+    /**
+     * 排产器获取生产线信息，里头包装了排产详情
+     * @param session session 对象
+     * @param year 最早年份，用于查询生产线人数，工作工时
+     * @return
+     */
+    @RequestMapping("getResourceDataByUserId")
+    @ResponseBody
+    public ServerResponse getResourceDataByUserId(HttpSession session, Integer year) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        return productionLineService.getResourceDataByUserId(user.getId(), year);
+    }
+
 }

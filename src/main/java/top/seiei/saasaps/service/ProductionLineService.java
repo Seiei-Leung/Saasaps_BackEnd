@@ -1,4 +1,8 @@
 package top.seiei.saasaps.service;
+import top.seiei.saasaps.bean.EfficiencyOfLine;
+import top.seiei.saasaps.bean.ProductionPlanningDetail;
+import top.seiei.saasaps.bean.WorkhoursOfLine;
+import top.seiei.saasaps.bean.PeopleNumOfLine;
 
 import org.springframework.stereotype.Service;
 import top.seiei.saasaps.bean.*;
@@ -6,11 +10,12 @@ import top.seiei.saasaps.common.Const;
 import top.seiei.saasaps.common.ServerResponse;
 import top.seiei.saasaps.dao.*;
 import top.seiei.saasaps.util.DateUtil;
-import top.seiei.saasaps.vo.ProductionLineDetailVO;
+import top.seiei.saasaps.vo.ProductionLineIncludePPD;
 import top.seiei.saasaps.vo.ProductionLineVO;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +41,9 @@ public class ProductionLineService {
     @Resource
     private ProductStyleMapper productStyleMapper;
 
+    @Resource
+    private ProductionPlanningDetailMapper productionPlanningDetailMapper;
+
     /**
      * 	获取所有生产线列表
      * @return 所有生产线列表
@@ -44,24 +52,9 @@ public class ProductionLineService {
         List<ProductionLine> productionLineList = productionLineMapper.getAll();
         List<ProductionLineVO> productionLineVOList = new ArrayList<>();
         for (ProductionLine item : productionLineList) {
-            productionLineVOList.add(assembleProductionLineVO(item));
+            productionLineVOList.add(assembleProductionLineVO(item, null));
         }
         return ServerResponse.createdBySuccess(productionLineVOList);
-    }
-
-    /**
-     *	获取某条生产线的详情
-     * @param lineId 生产线的 ID
-     * @return 某条生产线的详情
-     */
-    public ServerResponse<ProductionLineVO> selectByLineId(Integer lineId) {
-        Date now = new Date();
-        ProductionLine productionLine = productionLineMapper.selectByPrimaryKey(lineId);
-        if (productionLine == null) {
-            return ServerResponse.createdByError("该生产线不存在");
-        }
-        ProductionLineVO productionLineVO = assembleProductionLineVO(productionLine);
-        return ServerResponse.createdBySuccess(productionLineVO);
     }
 
     /**
@@ -69,12 +62,11 @@ public class ProductionLineService {
      * @param userId 用户 ID
      * @return 权限生产线列表
      */
-    public ServerResponse selectAllByUserId(Integer userId) {
-        Date now = new Date();
+    public ServerResponse selectAllByUserId(Integer userId, Integer year) {
         List<ProductionLineRight> productionLineRightList = productionLineRightMapper.selectByUserId(userId);
         List<Integer> idList = new ArrayList<>();
         productionLineRightList.forEach((productionLineRight -> {
-            idList.add(productionLineRight.getId());
+            idList.add(productionLineRight.getProductLineId());
         }));
         List<ProductionLine> productionLineList = productionLineMapper.selectByPrimaryKeyList(idList);
         if (productionLineList == null) {
@@ -82,7 +74,7 @@ public class ProductionLineService {
         }
         List<ProductionLineVO> productionLineVOList = new ArrayList<>();
         for (ProductionLine item : productionLineList) {
-            ProductionLineVO productionLineVO = assembleProductionLineVO(item);
+            ProductionLineVO productionLineVO = assembleProductionLineVO(item, year);
             productionLineVOList.add(productionLineVO);
         }
         return ServerResponse.createdBySuccess(productionLineVOList);
@@ -94,16 +86,13 @@ public class ProductionLineService {
      * @return 生产线详情
      */
     public ServerResponse selectDetailByLineId(Integer lineId) {
-        List<EfficiencyOfLine> efficiencyOfLineList = efficiencyOfLineMapper.selectByLineId(lineId);
-        List<WorkhoursOfLine> workhoursOfLineList = workhoursOfLineMapper.selectByLineId(lineId);
-        List<PeopleNumOfLine> peopleNumOfLineList = peopleNumOfLineMapper.selectByLineId(lineId);
-        ProductionLineDetailVO productionLineDetailVO = new ProductionLineDetailVO();
-        productionLineDetailVO.setEfficiencyOfLineList(efficiencyOfLineList);
-        productionLineDetailVO.setPeopleNumOfLineList(peopleNumOfLineList);
-        productionLineDetailVO.setWorkhoursOfLineList(workhoursOfLineList);
-        return ServerResponse.createdBySuccess(productionLineDetailVO);
+        ProductionLine productionLine = productionLineMapper.selectByPrimaryKey(lineId);
+        if (productionLine == null) {
+            return ServerResponse.createdByError("该生产线不存在");
+        }
+        ProductionLineVO productionLineVO = assembleProductionLineVO(productionLine, null);
+        return ServerResponse.createdBySuccess(productionLineVO);
     }
-
 
     /**
      * 更新生产线主体信息
@@ -281,17 +270,19 @@ public class ProductionLineService {
         if (workhoursOfLine == null) {
             return ServerResponse.createdByError("生产线没有该工作时间属性");
         }
-        WorkhoursOfLine workhoursOfLineTemp = workhoursOfLineMapper.selectWorkHoursByTime(workhoursOfLine.getProductionLineId(), new Date(startTime));
+        Date stime = DateUtil.zeroSetting(new Date(startTime));
+        Date etime = DateUtil.zeroSetting(new Date(endTime));
+        WorkhoursOfLine workhoursOfLineTemp = workhoursOfLineMapper.selectWorkHoursByTime(workhoursOfLine.getProductionLineId(), stime);
         if (workhoursOfLineTemp != null && workhoursOfLineTemp.getId() != id) {
             return ServerResponse.createdByError("该生产线在当前时间设置发生重叠冲突");
         }
-        workhoursOfLineTemp = workhoursOfLineMapper.selectWorkHoursByTime(workhoursOfLine.getProductionLineId(), new Date(endTime));
+        workhoursOfLineTemp = workhoursOfLineMapper.selectWorkHoursByTime(workhoursOfLine.getProductionLineId(), etime);
         if (workhoursOfLineTemp != null && workhoursOfLineTemp.getId() != id){
             return ServerResponse.createdByError("该生产线在当前时间设置发生重叠冲突");
         }
         workhoursOfLine.setUpdateUserId(user.getId());
-        workhoursOfLine.setStartTime(DateUtil.zeroSetting(new Date(startTime)));
-        workhoursOfLine.setEndTime(DateUtil.zeroSetting(new Date(endTime)));
+        workhoursOfLine.setStartTime(stime);
+        workhoursOfLine.setEndTime(etime);
         workhoursOfLine.setWorkhours(new BigDecimal(Double.toString(workhours)));
         workhoursOfLine.setUpdateTime(new Date());
         int result = workhoursOfLineMapper.updateByPrimaryKeySelective(workhoursOfLine);
@@ -334,18 +325,20 @@ public class ProductionLineService {
         if (startTime > endTime) {
             return ServerResponse.createdByError("起始时间不能比结束时间后");
         }
-        WorkhoursOfLine workhoursOfLineTemp = workhoursOfLineMapper.selectWorkHoursByTime(productionLineId, new Date(startTime));
+        Date stime = DateUtil.zeroSetting(new Date(startTime));
+        Date etime = DateUtil.zeroSetting(new Date(endTime));
+        WorkhoursOfLine workhoursOfLineTemp = workhoursOfLineMapper.selectWorkHoursByTime(productionLineId, stime);
         if (workhoursOfLineTemp != null) {
             return ServerResponse.createdByError("该生产线在当前时间设置发生重叠冲突");
         }
-        workhoursOfLineTemp = workhoursOfLineMapper.selectWorkHoursByTime(productionLineId, new Date(endTime));
+        workhoursOfLineTemp = workhoursOfLineMapper.selectWorkHoursByTime(productionLineId, etime);
         if (workhoursOfLineTemp != null){
             return ServerResponse.createdByError("该生产线在当前时间设置发生重叠冲突");
         }
         WorkhoursOfLine workhoursOfLine = new WorkhoursOfLine();
         workhoursOfLine.setWorkhours(new BigDecimal(Double.toString(workhours)));
-        workhoursOfLine.setEndTime(DateUtil.zeroSetting(new Date(endTime)));
-        workhoursOfLine.setStartTime(DateUtil.zeroSetting(new Date(startTime)));
+        workhoursOfLine.setStartTime(stime);
+        workhoursOfLine.setEndTime(etime);
         workhoursOfLine.setProductionLineId(productionLineId);
         workhoursOfLine.setUpdateUserId(user.getId());
         workhoursOfLine.setCreateTime(new Date());
@@ -356,7 +349,6 @@ public class ProductionLineService {
         }
         return ServerResponse.createdBySuccess("新增成功", workhoursOfLine.getId());
     }
-
 
     /**
      * 更新生产线工作人数属性
@@ -374,20 +366,22 @@ public class ProductionLineService {
         if (startTime > endTime) {
             return ServerResponse.createdByError("起始时间不能比结束时间后");
         }
+        Date stime = new Date(startTime);
+        Date etime = new Date(endTime);
         PeopleNumOfLine peopleNumOfLine = peopleNumOfLineMapper.selectByPrimaryKey(id);
         if (peopleNumOfLine == null) {
             return ServerResponse.createdByError("生产线没有该工作人数属性");
         }
-        PeopleNumOfLine peopleNumOfLineTemp = peopleNumOfLineMapper.selectPeopleNumByTime(peopleNumOfLine.getProductionLineId(), new Date(startTime));
+        PeopleNumOfLine peopleNumOfLineTemp = peopleNumOfLineMapper.selectPeopleNumByTime(peopleNumOfLine.getProductionLineId(), stime);
         if (peopleNumOfLineTemp != null && peopleNumOfLineTemp.getId() != id) {
             return ServerResponse.createdByError("该生产线在当前时间设置发生重叠冲突");
         }
-        peopleNumOfLineTemp = peopleNumOfLineMapper.selectPeopleNumByTime(peopleNumOfLine.getProductionLineId(), new Date(endTime));
-        if (peopleNumOfLineTemp != null && peopleNumOfLineTemp.getId() != id){
+        peopleNumOfLineTemp = peopleNumOfLineMapper.selectPeopleNumByTime(peopleNumOfLine.getProductionLineId(), etime);
+        if (peopleNumOfLineTemp != null && peopleNumOfLineTemp.getId() != id) {
             return ServerResponse.createdByError("该生产线在当前时间设置发生重叠冲突");
         }
-        peopleNumOfLine.setStartTime(DateUtil.zeroSetting(new Date(startTime)));
-        peopleNumOfLine.setEndTime(DateUtil.zeroSetting(new Date(endTime)));
+        peopleNumOfLine.setStartTime(stime);
+        peopleNumOfLine.setEndTime(etime);
         peopleNumOfLine.setPeopleNum(peopleNum);
         peopleNumOfLine.setUpdateUserId(user.getId());
         peopleNumOfLine.setUpdateTime(new Date());
@@ -414,18 +408,20 @@ public class ProductionLineService {
         if (startTime > endTime) {
             return ServerResponse.createdByError("起始时间不能比结束时间后");
         }
-        PeopleNumOfLine peopleNumOfLineTemp = peopleNumOfLineMapper.selectPeopleNumByTime(productionLineId, new Date(startTime));
+        Date stime = new Date(startTime);
+        Date etime = new Date(endTime);
+        PeopleNumOfLine peopleNumOfLineTemp = peopleNumOfLineMapper.selectPeopleNumByTime(productionLineId, stime);
         if (peopleNumOfLineTemp != null) {
             return ServerResponse.createdByError("该生产线在当前时间设置发生重叠冲突");
         }
-        peopleNumOfLineTemp = peopleNumOfLineMapper.selectPeopleNumByTime(productionLineId, new Date(endTime));
+        peopleNumOfLineTemp = peopleNumOfLineMapper.selectPeopleNumByTime(productionLineId, etime);
         if (peopleNumOfLineTemp != null){
             return ServerResponse.createdByError("该生产线在当前时间设置发生重叠冲突");
         }
         PeopleNumOfLine peopleNumOfLine = new PeopleNumOfLine();
         peopleNumOfLine.setPeopleNum(peopleNum);
-        peopleNumOfLine.setStartTime(DateUtil.zeroSetting(new Date(startTime)));
-        peopleNumOfLine.setEndTime(DateUtil.zeroSetting(new Date(endTime)));
+        peopleNumOfLine.setStartTime(stime);
+        peopleNumOfLine.setEndTime(etime);
         peopleNumOfLine.setProductionLineId(productionLineId);
         peopleNumOfLine.setUpdateUserId(user.getId());
         peopleNumOfLine.setCreateTime(new Date());
@@ -452,16 +448,26 @@ public class ProductionLineService {
             return ServerResponse.createdByError("删除失败");
         }
         return ServerResponse.createdBySuccessMessage("删除成功");
-
     }
 
     /**
-     * 根据生产线主键获取对应生产线个数，即查看该生产线主键对应的生产线是否存在
-     * @param id 生产线主键
-     * @return 生产线个数
+     * 排产器获取生产线信息，里头包装了排产详情
+     * @param userId 用户Id
+     * @param year 最早年份
+     * @return
      */
-    public int selectCountByPrimaryKey(Integer id) {
-        return productionLineMapper.selectCountByPrimaryKey(id);
+    public ServerResponse getResourceDataByUserId(Integer userId, Integer year) {
+        ServerResponse serverResponse = selectAllByUserId(userId, year);
+        if (!serverResponse.isSuccess()) {
+            return serverResponse;
+        }
+        List<ProductionLineVO> productionLineVOList = (List<ProductionLineVO>) serverResponse.getData();
+        List<ProductionLineIncludePPD> productionLineIncludePPDList = new ArrayList<>();
+        for (ProductionLineVO item : productionLineVOList) {
+            ProductionLineIncludePPD productionLineIncludePPD = assembleProductionLineIncludePPD(item, year);
+            productionLineIncludePPDList.add(productionLineIncludePPD);
+        }
+        return ServerResponse.createdBySuccess(productionLineIncludePPDList);
     }
 
     /**
@@ -469,7 +475,7 @@ public class ProductionLineService {
      * @param productionLine productionLine 对象
      * @return ProductionLineVO 对象
      */
-    private ProductionLineVO assembleProductionLineVO(ProductionLine productionLine) {
+    private ProductionLineVO assembleProductionLineVO(ProductionLine productionLine, Integer year) {
         ProductionLineVO productionLineVO = new ProductionLineVO();
         productionLineVO.setId(productionLine.getId());
         productionLineVO.setWorkgroup(productionLine.getWorkgroup());
@@ -478,9 +484,51 @@ public class ProductionLineService {
         productionLineVO.setInvalid(productionLine.getInvalid());
         productionLineVO.setWorkhours(productionLine.getWorkhours());
         productionLineVO.setPeopleNum(productionLine.getPeopleNum());
-        productionLineVO.setPeopleNumOfLineList(peopleNumOfLineMapper.selectByLineId(productionLine.getId()));
-        productionLineVO.setWorkhoursOfLineList(workhoursOfLineMapper.selectByLineId(productionLine.getId()));
-        productionLineVO.setEfficiencyOfLineList(efficiencyOfLineMapper.selectByLineId(productionLine.getId()));
+        if (year == null) {
+            productionLineVO.setPeopleNumOfLineList(peopleNumOfLineMapper.selectByLineId(productionLine.getId()));
+            productionLineVO.setWorkhoursOfLineList(workhoursOfLineMapper.selectByLineId(productionLine.getId()));
+            productionLineVO.setEfficiencyOfLineList(efficiencyOfLineMapper.selectByLineId(productionLine.getId()));
+        } else {
+            Date time = null;
+            try {
+                time = DateUtil.getFirstDayOfYear(year);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            productionLineVO.setPeopleNumOfLineList(peopleNumOfLineMapper.selectByLineIdAndTime(productionLine.getId(), time));
+            productionLineVO.setWorkhoursOfLineList(workhoursOfLineMapper.selectByLineIdAndTime(productionLine.getId(), time));
+            productionLineVO.setEfficiencyOfLineList(efficiencyOfLineMapper.selectByLineId(productionLine.getId()));
+        }
         return productionLineVO;
     }
+
+    /**
+     * 转化为 ProductionLineIncludePPD 对象
+     * @param productionLineVO productionLineVO 对象
+     * @param year 最早年份
+     * @return
+     */
+    private ProductionLineIncludePPD assembleProductionLineIncludePPD(ProductionLineVO productionLineVO, Integer year) {
+        ProductionLineIncludePPD productionLineIncludePPD = new ProductionLineIncludePPD();
+        productionLineIncludePPD.setId(productionLineVO.getId());
+        productionLineIncludePPD.setWorkgroup(productionLineVO.getWorkgroup());
+        productionLineIncludePPD.setWorkshop(productionLineVO.getWorkshop());
+        productionLineIncludePPD.setLineCode(productionLineVO.getLineCode());
+        productionLineIncludePPD.setWorkhours(productionLineVO.getWorkhours());
+        productionLineIncludePPD.setPeopleNum(productionLineVO.getPeopleNum());
+        productionLineIncludePPD.setInvalid(productionLineVO.getInvalid());
+        productionLineIncludePPD.setEfficiencyOfLineList(productionLineVO.getEfficiencyOfLineList());
+        productionLineIncludePPD.setPeopleNumOfLineList(productionLineVO.getPeopleNumOfLineList());
+        productionLineIncludePPD.setWorkhoursOfLineList(productionLineVO.getWorkhoursOfLineList());
+        Date time = null;
+        try {
+            time = DateUtil.getFirstDayOfYear(year);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        productionLineIncludePPD.setProductionPlanningDetailList(productionPlanningDetailMapper.selectByLineIdAndTime(productionLineVO.getId(), time));
+        return productionLineIncludePPD;
+    }
+
+
 }

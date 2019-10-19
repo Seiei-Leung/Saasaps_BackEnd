@@ -178,48 +178,73 @@ create table ProductStyle
     update_time datetime not null --更新时间
 )
 go
---排产计划信息
-if exists(select * from sysobjects where name='ProductionPlanning')
-drop table ProductionPlanning
-create table ProductionPlanning
-(
-    id int identity primary key, --主键
-  production_line_id int not null, --生产线ID
-  start_time datetime not null, --开始时间
-  end_time datetime not null, --结束时间
-  qty_plan int not null, --计划数量
-  qty_finish int DEFAULT '0', --已完成数量
-  custnames varchar(50) not null, --客户名称
-  ordernums varchar(50) not null, --制单号
-  update_user_id int not null, --更新用户ID
-  create_time datetime not null, --创建时间
-  update_time datetime not null --更新时间
-)
-go
 --排产计划详情信息
 if exists(select * from sysobjects where name='ProductionPlanningDetail')
 drop table ProductionPlanningDetail
 create table ProductionPlanningDetail
 (
-    id int identity primary key, --主键
-    is_to_do bit not null, --是否已经添加到排产计划中',
-    production_planning_id int DEFAULT NULL, --排产计划主信息ID',
-    production_line_id int not null, --生产线ID',
-    custname varchar(50) not null, --客户名称',
-    good_name varchar(50) not null, --货物名称',
-    ordernum varchar(50) not null, --制单号',
-    season varchar(10) DEFAULT NULL, --季节',
-    color varchar(10) DEFAULT NULL, --颜色',
-    qty_plan int not null, --计划数量',
-    qty_finish int DEFAULT '0', --已完成数量',
-    product_class_name varchar(20) not null, --产品类名称',
-    leaving_time datetime not null, --离厂日期',
+    id int identity primary key, -- 主键
+    summaryId int not null, -- 总表 Id
+    is_planning bit default '0', -- 是否已排产
+    productionLineId int default null, -- 生产线外键 Id
+    start_time datetime default null, --开始时间
+    end_time datetime default null, --结束时间
+    qty_finish int DEFAULT '0', --已完成数量
+    season varchar(10) default null, -- 季节
+    clientName varchar(100) default null, -- 客户
+    clientStyleNo varchar(50) default null, -- 客户款号
+    orderNo varchar(50) default null, -- 制单号
+    orderNum int default null, -- 制单数
+    orderKind varchar(50) default null, -- 订单类别
+    styleNo varchar(50) default null, -- 款号
+    goodName varchar(50) default null, -- 产品名称
+    style varchar(50) default null, -- 款式
+    deliveryOfContract_time datetime default null, -- 合同交期
+    deliveryOfFactory_time datetime default null, -- 工厂离厂期
+    arriveWarehouse_time datetime default null, -- 到仓期
+    qtyOfBatchedDelivery int default null, -- 分批走货数量
+    lining varchar(50) default null, -- 面料
+    liningOfStitching_time datetime default null, -- 车缝辅料期
+    suppliesOfLining varchar(50) default null, -- 面料供应商
+    cloth_time datetime default null, -- 布期
+    sam decimal(10, 2) default null, -- sam
+    samOfLocal decimal(10,2) default null, -- 本厂 sam
+    sah decimal(10, 2) default null, -- sah
+    approve_time datetime default null, -- 批办时间
+    embroider varchar(50) default null, -- 车印花
+    embroider_dayNum int default null, -- 车印花天数
+    embroider_time datetime default null, -- 车印花日期
+    factory_embroider varchar(50) default null, -- 车花工厂1
+    factory_embroider2 varchar(50) default null, -- 车花工厂2
+    printAfterembroider varchar(50) default null, -- 车花后再印花
+    printAfterembroider_dayNum int default null, -- 车花后再印花天数
+    factory_print varchar(50) default null, -- 印花工厂1
+    factory_print2 varchar(50) default null, -- 印花工厂2
+    backPart_dayNum int default null, -- 后整天数
+    memo varchar(500) default null, -- 备注
+    cuttingQty int default null, -- 裁剪数
+    is_finish_cutting bit default '0', -- 是否结束裁剪
+    advanceCutting_dayNum int default null, -- 提前开裁天数
     update_user_id int not null, --更新用户ID',
     create_time datetime not null, --创建时间',
     update_time datetime not null --更新时间',
 )
 go
---排产计划详情信息
+--排产计划详情信息主表
+if exists(select * from sysobjects where name='SummaryOfProductionPlanningDetail')
+drop table SummaryOfProductionPlanningDetail
+create table SummaryOfProductionPlanningDetail
+(
+    id int identity primary key, --主键
+    billno varchar(20) not null, --单号
+    clientName varchar(50) default null, --客户
+    season varchar(20) default null, -- 季节
+    update_user_id int not null, --更新用户ID
+    create_time datetime not null, --创建时间
+    update_time datetime not null --更新时间
+)
+go
+--节假日信息
 if exists(select * from sysobjects where name='Festival')
 drop table Festival
 create table Festival
