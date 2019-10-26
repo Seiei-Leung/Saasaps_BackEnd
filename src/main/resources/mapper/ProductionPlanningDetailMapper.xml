@@ -588,7 +588,24 @@
     productionLineId = #{id}
     and
     start_time &gt;= #{time}
+    and
+    style
+    in
+    (select name from ProductClass)
     order by
     start_time
+  </select>
+  <select id="selectAllForAddProgress" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    ProductionPlanningDetail
+    where
+    is_planning = '0'
+    and
+    GETDATE() &lt; deliveryOfFactory_time
+    order by
+    create_time
+    desc
   </select>
 </mapper>

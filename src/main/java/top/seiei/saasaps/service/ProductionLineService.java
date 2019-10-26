@@ -1,4 +1,5 @@
 package top.seiei.saasaps.service;
+
 import top.seiei.saasaps.bean.EfficiencyOfLine;
 import top.seiei.saasaps.bean.ProductionPlanningDetail;
 import top.seiei.saasaps.bean.WorkhoursOfLine;
@@ -43,6 +44,9 @@ public class ProductionLineService {
 
     @Resource
     private ProductionPlanningDetailMapper productionPlanningDetailMapper;
+
+    @Resource
+    private ProductionPlanningDetailService productionPlanningDetailService;
 
     /**
      * 	获取所有生产线列表
@@ -526,7 +530,10 @@ public class ProductionLineService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        productionLineIncludePPD.setProductionPlanningDetailList(productionPlanningDetailMapper.selectByLineIdAndTime(productionLineVO.getId(), time));
+        // 赋值品类效率，品类
+        List<ProductionPlanningDetail> productionPlanningDetailList = productionPlanningDetailMapper.selectByLineIdAndTime(productionLineVO.getId(), time);
+        List<ProductionPlanningDetail> resultProductionPlanningDetailList = productionPlanningDetailService.setEfficiencyOfClassAndProductStyleName(productionPlanningDetailList);
+        productionLineIncludePPD.setProductionPlanningDetailList(resultProductionPlanningDetailList);
         return productionLineIncludePPD;
     }
 

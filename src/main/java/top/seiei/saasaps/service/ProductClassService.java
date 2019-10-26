@@ -12,6 +12,7 @@ import top.seiei.saasaps.dao.ProductClassMapper;
 import top.seiei.saasaps.dao.ProductStyleMapper;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -211,7 +212,7 @@ public class ProductClassService {
      * @param qtyPlan 计划件数
      * @return
      */
-    public ServerResponse<ProductClassEfficiency> getProductClassEfficiencyByProductClassNameAndQtyPlan(String productionClassName, Integer qtyPlan) {
+    public ServerResponse<BigDecimal> getProductClassEfficiencyByProductClassNameAndQtyPlan(String productionClassName, Integer qtyPlan) {
         ProductClass productClass = productClassMapper.selectByProductClassName(productionClassName);
         if (productClass == null) {
             return ServerResponse.createdByError("该产品类不存在");
@@ -228,9 +229,10 @@ public class ProductClassService {
             }
         }
         if (productClassEfficiency == null) {
-            return ServerResponse.createdByError("该产品类当前计划件数对应的效率尚未定义");
+            return ServerResponse.createdBySuccess(productClass.getEfficiency());
         }
-        return ServerResponse.createdBySuccess(productClassEfficiency);
+        return ServerResponse.createdBySuccess(productClassEfficiency.getEfficiency());
     }
+
 
 }

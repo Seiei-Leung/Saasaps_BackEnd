@@ -1,6 +1,7 @@
 package top.seiei.saasaps.service;
 import java.math.BigDecimal;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.io.File;
@@ -12,10 +13,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import top.seiei.saasaps.bean.ProductClass;
 import top.seiei.saasaps.bean.ProductionPlanningDetail;
 import top.seiei.saasaps.bean.SummaryOfProductionPlanningDetail;
 import top.seiei.saasaps.bean.User;
 import top.seiei.saasaps.common.ServerResponse;
+import top.seiei.saasaps.dao.ProductClassMapper;
 import top.seiei.saasaps.dao.ProductionPlanningDetailMapper;
 import top.seiei.saasaps.dao.SummaryOfProductionPlanningDetailMapper;
 import top.seiei.saasaps.util.DateUtil;
@@ -35,6 +38,13 @@ public class ProductionPlanningDetailService {
 
     @Resource
     private SummaryOfProductionPlanningDetailMapper summaryOfProductionPlanningDetailMapper;
+
+    @Resource
+    private ProductClassService productClassService;
+
+    @Resource
+    private ProductClassMapper productClassMapper;
+
 
     /**
      * 导入 excel
@@ -185,8 +195,6 @@ public class ProductionPlanningDetailService {
         return ServerResponse.createdByError("删除成功");
     }
 
-
-
     /**
      * 获取单号
      * @return
@@ -201,5 +209,40 @@ public class ProductionPlanningDetailService {
             billno = billno + StringUtil.zeroFill(Integer.toString(count), 3);
         }
         return billno;
+    }
+
+    // ---------------------------------------------- 排产器页面 -------------------------------------------------------
+
+    /**
+     * 获取所有等待排产的进度条
+     * @return
+     */
+    public ServerResponse getAllForAddProgress() {
+        List<ProductionPlanningDetail> productionPlanningDetailList = productionPlanningDetailMapper.selectAllForAddProgress();
+        List<ProductionPlanningDetail> resultProductionPlanningDetailList = setEfficiencyOfClassAndProductStyleName(productionPlanningDetailList);
+        return ServerResponse.createdBySuccess(resultProductionPlanningDetailList);
+    }
+
+    /**
+     * 为详情添加效率和产品类名
+     * @param productionPlanningDetailList
+     * @return
+     */
+    public List<ProductionPlanningDetail> setEfficiencyOfClassAndProductStyleName(List<ProductionPlanningDetail> productionPlanningDetailList) {
+        List<ProductionPlanningDetail> resultProductionPlanningDetailList = new ArrayList<>();
+        List<ProductClass> productClassList = productClassMapper.selectAll();
+        for (ProductionPlanningDetail item : productionPlanningDetailList) {
+            ServerResponse serverResponse = productClassService.getProductClassEfficiencyByProductClassNameAndQtyPlan(item.getStyle(), item.getQtyofbatcheddelivery());
+            if (serverResponse.isSuccess()) {
+                item.setEfficiencyOfClass((BigDecimal) serverResponse.getData());
+                for (ProductClass item2 : productClassList) {
+                    if (StringUtils.equals(item2.getName(), item.getStyle())) {
+                        item.setProductStyleName(item2.getProductStyleName());
+                    }
+                }
+                resultProductionPlanningDetailList.add(item);
+            }
+        }
+        return resultProductionPlanningDetailList;
     }
 }

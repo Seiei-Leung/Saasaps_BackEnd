@@ -1,5 +1,5 @@
 package top.seiei.saasaps.controller;
-import java.math.BigDecimal;
+
 import java.util.Date;
 
 import org.springframework.stereotype.Controller;
@@ -118,5 +118,16 @@ public class ProductionPlanningDetailController {
         return productionPlanningDetailService.deleteById(id);
     }
 
+    // ---------------------------------------------- 排产器页面 -------------------------------------------------------
 
+    /**
+     * 获取所有等待排产的进度条
+     * @param session session 对象
+     * @return
+     */
+    @RequestMapping("getAllForAddProgress")
+    @ResponseBody
+    public ServerResponse getAllForAddProgress(HttpSession session) {
+        return productionPlanningDetailService.getAllForAddProgress();
+    }
 }

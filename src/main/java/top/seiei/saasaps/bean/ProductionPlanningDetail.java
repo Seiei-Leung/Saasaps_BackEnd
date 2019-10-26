@@ -95,6 +95,10 @@ public class ProductionPlanningDetail implements Serializable {
 
     private Date updateTime;
 
+    private BigDecimal efficiencyOfClass; // 效率
+
+    private String productStyleName; // 所属的款式分类
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -622,5 +626,37 @@ public class ProductionPlanningDetail implements Serializable {
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
+    }
+
+    public Boolean getPlanning() {
+        return isPlanning;
+    }
+
+    public void setPlanning(Boolean planning) {
+        isPlanning = planning;
+    }
+
+    public Boolean getFinishCutting() {
+        return isFinishCutting;
+    }
+
+    public void setFinishCutting(Boolean finishCutting) {
+        isFinishCutting = finishCutting;
+    }
+
+    public BigDecimal getEfficiencyOfClass() {
+        return efficiencyOfClass;
+    }
+
+    public void setEfficiencyOfClass(BigDecimal efficiencyOfClass) {
+        this.efficiencyOfClass = efficiencyOfClass;
+    }
+
+    public String getProductStyleName() {
+        return productStyleName;
+    }
+
+    public void setProductStyleName(String productStyleName) {
+        this.productStyleName = productStyleName;
     }
 }

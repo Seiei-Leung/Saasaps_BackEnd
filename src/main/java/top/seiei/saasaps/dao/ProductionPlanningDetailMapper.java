@@ -24,4 +24,6 @@ public interface ProductionPlanningDetailMapper {
     int deleteBySummaryId(Integer id);
 
     List<ProductionPlanningDetail> selectByLineIdAndTime(@Param("id") Integer id, @Param("time") Date time);
+
+    List<ProductionPlanningDetail> selectAllForAddProgress();
 }
