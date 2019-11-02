@@ -14,6 +14,7 @@ import top.seiei.saasaps.util.StringUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -129,5 +130,18 @@ public class ProductionPlanningDetailController {
     @ResponseBody
     public ServerResponse getAllForAddProgress(HttpSession session) {
         return productionPlanningDetailService.getAllForAddProgress();
+    }
+
+    /**
+     * 新增排产、移动排产信息数据更新
+     * @param session session 对象
+     * @param params 数据列表
+     * @return
+     */
+    @RequestMapping("updateProgress")
+    @ResponseBody
+    public ServerResponse updateProgress(HttpSession session,@RequestBody List<Map<String, String>> params) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        return productionPlanningDetailService.updateProgress(user, params);
     }
 }

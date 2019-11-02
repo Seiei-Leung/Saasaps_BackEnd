@@ -1,12 +1,10 @@
 package top.seiei.saasaps.service;
+import java.util.Date;
 import java.math.BigDecimal;
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -245,4 +243,46 @@ public class ProductionPlanningDetailService {
         }
         return resultProductionPlanningDetailList;
     }
+
+    /**
+     * 新增排产、移动排产信息数据更新
+     * @param user 用户信息
+     * @param dataList 数据列表
+     * @return
+     */
+    @Transactional(rollbackFor=Exception.class)
+    public ServerResponse updateProgress(User user, List<Map<String, String>> dataList) {
+        List<ProductionPlanningDetail> productionPlanningDetailList = new ArrayList<>();
+        for (Map<String, String> item : dataList) {
+            Integer id = Integer.parseInt(item.get("id"));
+            Date startTime = new Date(Long.parseLong(item.get("startTime")));
+            Date endTime = new Date(Long.parseLong(item.get("endTime")));
+            Integer productionLineId = Integer.parseInt(item.get("productionLineId"));
+            Integer qtyFinish = Integer.parseInt(item.get("qtyFinish")); // 更新工作完成数量
+            Integer qtyofbatcheddelivery = Integer.parseInt(item.get("qtyofbatcheddelivery")); // 更新计划数量
+
+            ProductionPlanningDetail productionPlanningDetail = productionPlanningDetailMapper.selectByPrimaryKey(id);
+            if (productionPlanningDetail == null) {
+                return ServerResponse.createdByError("某条进度排产不存在");
+            }
+
+            ProductionPlanningDetail productionPlanningDetail1ForUpdate = new ProductionPlanningDetail();
+            productionPlanningDetail1ForUpdate.setId(id);
+            productionPlanningDetail1ForUpdate.setIsPlanning(true);
+            productionPlanningDetail1ForUpdate.setProductionlineid(productionLineId);
+            productionPlanningDetail1ForUpdate.setStartTime(startTime);
+            productionPlanningDetail1ForUpdate.setEndTime(endTime);
+            productionPlanningDetail1ForUpdate.setQtyFinish(qtyFinish);
+            productionPlanningDetail1ForUpdate.setQtyofbatcheddelivery(qtyofbatcheddelivery);
+            productionPlanningDetail1ForUpdate.setUpdateUserId(user.getId());
+            productionPlanningDetail1ForUpdate.setUpdateTime(new Date());
+
+            productionPlanningDetailList.add(productionPlanningDetail1ForUpdate);
+        }
+        for (ProductionPlanningDetail item : productionPlanningDetailList) {
+            productionPlanningDetailMapper.updateByPrimaryKeySelective(item);
+        }
+        return ServerResponse.createdBySuccessMessage("更新成功");
+    }
+
 }

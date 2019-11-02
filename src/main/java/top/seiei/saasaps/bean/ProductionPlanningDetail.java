@@ -628,14 +628,6 @@ public class ProductionPlanningDetail implements Serializable {
         return sb.toString();
     }
 
-    public Boolean getPlanning() {
-        return isPlanning;
-    }
-
-    public void setPlanning(Boolean planning) {
-        isPlanning = planning;
-    }
-
     public Boolean getFinishCutting() {
         return isFinishCutting;
     }

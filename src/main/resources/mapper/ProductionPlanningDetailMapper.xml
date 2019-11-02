@@ -605,7 +605,6 @@
     and
     GETDATE() &lt; deliveryOfFactory_time
     order by
-    create_time
-    desc
+    deliveryOfFactory_time
   </select>
 </mapper>

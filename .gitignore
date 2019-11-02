@@ -21,6 +21,7 @@ classes/
 *.iws
 
 # Vue 文件
+src/main/webapp/ps/
 src/main/webapp/static/
 src/main/webapp/index.html
 
