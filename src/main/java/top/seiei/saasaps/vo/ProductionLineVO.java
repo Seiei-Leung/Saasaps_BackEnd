@@ -23,6 +23,8 @@ public class ProductionLineVO {
 
     private Boolean isInvalid;
 
+    private String defaultStyleName;
+
     private List<EfficiencyOfLine> efficiencyOfLineList;
 
     private List<PeopleNumOfLine> peopleNumOfLineList;
@@ -30,6 +32,14 @@ public class ProductionLineVO {
     private List<WorkhoursOfLine> workhoursOfLineList;
 
     private static final long serialVersionUID = 1L;
+
+    public String getDefaultStyleName() {
+        return defaultStyleName;
+    }
+
+    public void setDefaultStyleName(String defaultStyleName) {
+        this.defaultStyleName = defaultStyleName;
+    }
 
     public Integer getId() {
         return id;

@@ -1,7 +1,6 @@
 package top.seiei.saasaps.service;
 import java.util.Date;
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.util.*;
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +41,6 @@ public class ProductionPlanningDetailService {
 
     @Resource
     private ProductClassMapper productClassMapper;
-
 
     /**
      * 导入 excel
@@ -92,12 +90,14 @@ public class ProductionPlanningDetailService {
                     productionPlanningDetail.setLiningofstitchingTime(ExcelUtil.getDateCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.liningOfStitching_time")));
                     productionPlanningDetail.setSuppliesoflining(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.suppliesOfLining")));
                     productionPlanningDetail.setClothTime(ExcelUtil.getDateCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.cloth_time")));
+                    productionPlanningDetail.setColor(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.color")));
+                    productionPlanningDetail.setSizes(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.sizes")));
                     if (ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.sam")) == null) {
                         productionPlanningDetail.setSam(null);
                     } else {
                         productionPlanningDetail.setSam(new BigDecimal(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.sam"))));
                     }
-                    if (ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.samOfLocal")) == null) {
+                    if (ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.samOfLocal")) == null || StringUtils.isBlank(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.samOfLocal")))) {
                         productionPlanningDetail.setSamoflocal(null);
                     } else {
                         productionPlanningDetail.setSamoflocal(new BigDecimal(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.samOfLocal"))));
@@ -253,7 +253,13 @@ public class ProductionPlanningDetailService {
     @Transactional(rollbackFor=Exception.class)
     public ServerResponse updateProgress(User user, List<Map<String, String>> dataList) {
         List<ProductionPlanningDetail> productionPlanningDetailList = new ArrayList<>();
+        List<Map<String, String>> dataListOfInsert = new ArrayList<>(); // 拆单而新增的排产进度条列表
         for (Map<String, String> item : dataList) {
+            // 判断是否为拆单所产生的新增排产进度条
+            if (item.get("id").contains("new")) {
+                dataListOfInsert.add(item);
+                continue;
+            }
             Integer id = Integer.parseInt(item.get("id"));
             Date startTime = new Date(Long.parseLong(item.get("startTime")));
             Date endTime = new Date(Long.parseLong(item.get("endTime")));
@@ -265,7 +271,6 @@ public class ProductionPlanningDetailService {
             if (productionPlanningDetail == null) {
                 return ServerResponse.createdByError("某条进度排产不存在");
             }
-
             ProductionPlanningDetail productionPlanningDetail1ForUpdate = new ProductionPlanningDetail();
             productionPlanningDetail1ForUpdate.setId(id);
             productionPlanningDetail1ForUpdate.setIsPlanning(true);
@@ -276,13 +281,56 @@ public class ProductionPlanningDetailService {
             productionPlanningDetail1ForUpdate.setQtyofbatcheddelivery(qtyofbatcheddelivery);
             productionPlanningDetail1ForUpdate.setUpdateUserId(user.getId());
             productionPlanningDetail1ForUpdate.setUpdateTime(new Date());
-
             productionPlanningDetailList.add(productionPlanningDetail1ForUpdate);
         }
         for (ProductionPlanningDetail item : productionPlanningDetailList) {
             productionPlanningDetailMapper.updateByPrimaryKeySelective(item);
         }
+        // 拆单而新增的排产进度条
+        List<ProductionPlanningDetail> productionPlanningDetailListForInsert = new ArrayList<>();
+        for (Map<String, String> item : dataListOfInsert) {
+            Date startTime = new Date(Long.parseLong(item.get("startTime")));
+            Date endTime = new Date(Long.parseLong(item.get("endTime")));
+            Integer productionLineId = Integer.parseInt(item.get("productionLineId"));
+            Integer qtyofbatcheddelivery = Integer.parseInt(item.get("qtyofbatcheddelivery")); // 更新计划数量
+            Integer parentId = Integer.parseInt(item.get("parentId"));
+            ProductionPlanningDetail productionPlanningDetailOfParent = productionPlanningDetailMapper.selectByPrimaryKey(parentId); // 拆单前的原排产
+            productionPlanningDetailOfParent.setId(null);
+            productionPlanningDetailOfParent.setStartTime(startTime);
+            productionPlanningDetailOfParent.setEndTime(endTime);
+            productionPlanningDetailOfParent.setProductionlineid(productionLineId);
+            productionPlanningDetailOfParent.setQtyofbatcheddelivery(qtyofbatcheddelivery);
+            productionPlanningDetailOfParent.setQtyFinish(0);
+            productionPlanningDetailOfParent.setCreateTime(new Date());
+            productionPlanningDetailOfParent.setUpdateTime(new Date());
+            productionPlanningDetailOfParent.setUpdateUserId(user.getId());
+            productionPlanningDetailListForInsert.add(productionPlanningDetailOfParent);
+        }
+        for (ProductionPlanningDetail item : productionPlanningDetailListForInsert) {
+            productionPlanningDetailMapper.insertSelective(item);
+        }
         return ServerResponse.createdBySuccessMessage("更新成功");
     }
 
+    /**
+     * 排产器删除已排产计划
+     * @param user 用户信息
+     * @param id 排产进度 Id
+     * @return
+     */
+    public ServerResponse resetProgress(User user, Integer id) {
+        ProductionPlanningDetail productionPlanningDetail = productionPlanningDetailMapper.selectByPrimaryKey(id);
+        if (productionPlanningDetail == null) {
+            return ServerResponse.createdByError("该排产进度不存在");
+        }
+        productionPlanningDetail.setIsPlanning(false);
+        productionPlanningDetail.setQtyFinish(0);
+        productionPlanningDetail.setStartTime(null);
+        productionPlanningDetail.setEndTime(null);
+        productionPlanningDetail.setProductionlineid(null);
+        productionPlanningDetail.setEfficiencyBySetting(null);
+        productionPlanningDetail.setUpdateUserId(user.getId());
+        productionPlanningDetailMapper.updateByPrimaryKey(productionPlanningDetail);
+        return ServerResponse.createdBySuccess("删除成功");
+    }
 }

@@ -9,6 +9,7 @@
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="qty_finish" jdbcType="INTEGER" property="qtyFinish" />
+    <result column="efficiency_by_setting" jdbcType="DECIMAL" property="efficiencyBySetting" />
     <result column="season" jdbcType="VARCHAR" property="season" />
     <result column="clientName" jdbcType="VARCHAR" property="clientname" />
     <result column="clientStyleNo" jdbcType="VARCHAR" property="clientstyleno" />
@@ -44,19 +45,21 @@
     <result column="cuttingQty" jdbcType="INTEGER" property="cuttingqty" />
     <result column="is_finish_cutting" jdbcType="BIT" property="isFinishCutting" />
     <result column="advanceCutting_dayNum" jdbcType="INTEGER" property="advancecuttingDaynum" />
+    <result column="sizes" jdbcType="VARCHAR" property="sizes" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, summaryId, is_planning, productionLineId, start_time, end_time, qty_finish, season, 
-    clientName, clientStyleNo, orderNo, orderNum, orderKind, styleNo, goodName, style, 
-    deliveryOfContract_time, deliveryOfFactory_time, arriveWarehouse_time, qtyOfBatchedDelivery, 
+    id, summaryId, is_planning, productionLineId, start_time, end_time, qty_finish, efficiency_by_setting, 
+    season, clientName, clientStyleNo, orderNo, orderNum, orderKind, styleNo, goodName, 
+    style, deliveryOfContract_time, deliveryOfFactory_time, arriveWarehouse_time, qtyOfBatchedDelivery, 
     lining, liningOfStitching_time, suppliesOfLining, cloth_time, sam, samOfLocal, sah, 
     approve_time, embroider, embroider_dayNum, embroider_time, factory_embroider, factory_embroider2, 
     printAfterembroider, printAfterembroider_dayNum, factory_print, factory_print2, backPart_dayNum, 
-    memo, cuttingQty, is_finish_cutting, advanceCutting_dayNum, update_user_id, create_time, 
-    update_time
+    memo, cuttingQty, is_finish_cutting, advanceCutting_dayNum, sizes, color, update_user_id, 
+    create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -71,38 +74,38 @@
   <insert id="insert" parameterType="top.seiei.saasaps.bean.ProductionPlanningDetail">
     insert into ProductionPlanningDetail (id, summaryId, is_planning, 
       productionLineId, start_time, end_time, 
-      qty_finish, season, clientName, 
-      clientStyleNo, orderNo, orderNum, 
-      orderKind, styleNo, goodName, 
-      style, deliveryOfContract_time, deliveryOfFactory_time, 
-      arriveWarehouse_time, qtyOfBatchedDelivery, 
-      lining, liningOfStitching_time, suppliesOfLining, 
-      cloth_time, sam, samOfLocal, 
-      sah, approve_time, embroider, 
-      embroider_dayNum, embroider_time, factory_embroider, 
-      factory_embroider2, printAfterembroider, 
+      qty_finish, efficiency_by_setting, season, 
+      clientName, clientStyleNo, orderNo, 
+      orderNum, orderKind, styleNo, 
+      goodName, style, deliveryOfContract_time, 
+      deliveryOfFactory_time, arriveWarehouse_time, 
+      qtyOfBatchedDelivery, lining, liningOfStitching_time, 
+      suppliesOfLining, cloth_time, sam, 
+      samOfLocal, sah, approve_time, 
+      embroider, embroider_dayNum, embroider_time, 
+      factory_embroider, factory_embroider2, printAfterembroider, 
       printAfterembroider_dayNum, factory_print, 
       factory_print2, backPart_dayNum, memo, 
       cuttingQty, is_finish_cutting, advanceCutting_dayNum, 
-      update_user_id, create_time, update_time
-      )
+      sizes, color, update_user_id, 
+      create_time, update_time)
     values (#{id,jdbcType=INTEGER}, #{summaryid,jdbcType=INTEGER}, #{isPlanning,jdbcType=BIT}, 
       #{productionlineid,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
-      #{qtyFinish,jdbcType=INTEGER}, #{season,jdbcType=VARCHAR}, #{clientname,jdbcType=VARCHAR}, 
-      #{clientstyleno,jdbcType=VARCHAR}, #{orderno,jdbcType=VARCHAR}, #{ordernum,jdbcType=INTEGER}, 
-      #{orderkind,jdbcType=VARCHAR}, #{styleno,jdbcType=VARCHAR}, #{goodname,jdbcType=VARCHAR}, 
-      #{style,jdbcType=VARCHAR}, #{deliveryofcontractTime,jdbcType=TIMESTAMP}, #{deliveryoffactoryTime,jdbcType=TIMESTAMP}, 
-      #{arrivewarehouseTime,jdbcType=TIMESTAMP}, #{qtyofbatcheddelivery,jdbcType=INTEGER}, 
-      #{lining,jdbcType=VARCHAR}, #{liningofstitchingTime,jdbcType=TIMESTAMP}, #{suppliesoflining,jdbcType=VARCHAR}, 
-      #{clothTime,jdbcType=TIMESTAMP}, #{sam,jdbcType=DECIMAL}, #{samoflocal,jdbcType=DECIMAL}, 
-      #{sah,jdbcType=DECIMAL}, #{approveTime,jdbcType=TIMESTAMP}, #{embroider,jdbcType=VARCHAR}, 
-      #{embroiderDaynum,jdbcType=INTEGER}, #{embroiderTime,jdbcType=TIMESTAMP}, #{factoryEmbroider,jdbcType=VARCHAR}, 
-      #{factoryEmbroider2,jdbcType=VARCHAR}, #{printafterembroider,jdbcType=VARCHAR}, 
+      #{qtyFinish,jdbcType=INTEGER}, #{efficiencyBySetting,jdbcType=DECIMAL}, #{season,jdbcType=VARCHAR}, 
+      #{clientname,jdbcType=VARCHAR}, #{clientstyleno,jdbcType=VARCHAR}, #{orderno,jdbcType=VARCHAR}, 
+      #{ordernum,jdbcType=INTEGER}, #{orderkind,jdbcType=VARCHAR}, #{styleno,jdbcType=VARCHAR}, 
+      #{goodname,jdbcType=VARCHAR}, #{style,jdbcType=VARCHAR}, #{deliveryofcontractTime,jdbcType=TIMESTAMP}, 
+      #{deliveryoffactoryTime,jdbcType=TIMESTAMP}, #{arrivewarehouseTime,jdbcType=TIMESTAMP}, 
+      #{qtyofbatcheddelivery,jdbcType=INTEGER}, #{lining,jdbcType=VARCHAR}, #{liningofstitchingTime,jdbcType=TIMESTAMP}, 
+      #{suppliesoflining,jdbcType=VARCHAR}, #{clothTime,jdbcType=TIMESTAMP}, #{sam,jdbcType=DECIMAL}, 
+      #{samoflocal,jdbcType=DECIMAL}, #{sah,jdbcType=DECIMAL}, #{approveTime,jdbcType=TIMESTAMP}, 
+      #{embroider,jdbcType=VARCHAR}, #{embroiderDaynum,jdbcType=INTEGER}, #{embroiderTime,jdbcType=TIMESTAMP}, 
+      #{factoryEmbroider,jdbcType=VARCHAR}, #{factoryEmbroider2,jdbcType=VARCHAR}, #{printafterembroider,jdbcType=VARCHAR}, 
       #{printafterembroiderDaynum,jdbcType=INTEGER}, #{factoryPrint,jdbcType=VARCHAR}, 
       #{factoryPrint2,jdbcType=VARCHAR}, #{backpartDaynum,jdbcType=INTEGER}, #{memo,jdbcType=VARCHAR}, 
       #{cuttingqty,jdbcType=INTEGER}, #{isFinishCutting,jdbcType=BIT}, #{advancecuttingDaynum,jdbcType=INTEGER}, 
-      #{updateUserId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+      #{sizes,jdbcType=VARCHAR}, #{color,jdbcType=VARCHAR}, #{updateUserId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="top.seiei.saasaps.bean.ProductionPlanningDetail">
     insert into ProductionPlanningDetail
@@ -127,6 +130,9 @@
       </if>
       <if test="qtyFinish != null">
         qty_finish,
+      </if>
+      <if test="efficiencyBySetting != null">
+        efficiency_by_setting,
       </if>
       <if test="season != null">
         season,
@@ -233,6 +239,12 @@
       <if test="advancecuttingDaynum != null">
         advanceCutting_dayNum,
       </if>
+      <if test="sizes != null">
+        sizes,
+      </if>
+      <if test="color != null">
+        color,
+      </if>
       <if test="updateUserId != null">
         update_user_id,
       </if>
@@ -264,6 +276,9 @@
       </if>
       <if test="qtyFinish != null">
         #{qtyFinish,jdbcType=INTEGER},
+      </if>
+      <if test="efficiencyBySetting != null">
+        #{efficiencyBySetting,jdbcType=DECIMAL},
       </if>
       <if test="season != null">
         #{season,jdbcType=VARCHAR},
@@ -370,6 +385,12 @@
       <if test="advancecuttingDaynum != null">
         #{advancecuttingDaynum,jdbcType=INTEGER},
       </if>
+      <if test="sizes != null">
+        #{sizes,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null">
+        #{color,jdbcType=VARCHAR},
+      </if>
       <if test="updateUserId != null">
         #{updateUserId,jdbcType=INTEGER},
       </if>
@@ -401,6 +422,9 @@
       </if>
       <if test="qtyFinish != null">
         qty_finish = #{qtyFinish,jdbcType=INTEGER},
+      </if>
+      <if test="efficiencyBySetting != null">
+        efficiency_by_setting = #{efficiencyBySetting,jdbcType=DECIMAL},
       </if>
       <if test="season != null">
         season = #{season,jdbcType=VARCHAR},
@@ -507,6 +531,12 @@
       <if test="advancecuttingDaynum != null">
         advanceCutting_dayNum = #{advancecuttingDaynum,jdbcType=INTEGER},
       </if>
+      <if test="sizes != null">
+        sizes = #{sizes,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null">
+        color = #{color,jdbcType=VARCHAR},
+      </if>
       <if test="updateUserId != null">
         update_user_id = #{updateUserId,jdbcType=INTEGER},
       </if>
@@ -527,6 +557,7 @@
       start_time = #{startTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
       qty_finish = #{qtyFinish,jdbcType=INTEGER},
+      efficiency_by_setting = #{efficiencyBySetting,jdbcType=DECIMAL},
       season = #{season,jdbcType=VARCHAR},
       clientName = #{clientname,jdbcType=VARCHAR},
       clientStyleNo = #{clientstyleno,jdbcType=VARCHAR},
@@ -562,6 +593,8 @@
       cuttingQty = #{cuttingqty,jdbcType=INTEGER},
       is_finish_cutting = #{isFinishCutting,jdbcType=BIT},
       advanceCutting_dayNum = #{advancecuttingDaynum,jdbcType=INTEGER},
+      sizes = #{sizes,jdbcType=VARCHAR},
+      color = #{color,jdbcType=VARCHAR},
       update_user_id = #{updateUserId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
@@ -588,6 +621,8 @@
     productionLineId = #{id}
     and
     start_time &gt;= #{time}
+    and
+    is_planning = '1'
     and
     style
     in

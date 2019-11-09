@@ -19,6 +19,8 @@ public class ProductionPlanningDetail implements Serializable {
 
     private Integer qtyFinish;
 
+    private BigDecimal efficiencyBySetting;
+
     private String season;
 
     private String clientname;
@@ -89,15 +91,19 @@ public class ProductionPlanningDetail implements Serializable {
 
     private Integer advancecuttingDaynum;
 
+    private String sizes;
+
+    private String color;
+
+    private BigDecimal efficiencyOfClass; // 效率
+
+    private String productStyleName; // 所属的款式分类
+
     private Integer updateUserId;
 
     private Date createTime;
 
     private Date updateTime;
-
-    private BigDecimal efficiencyOfClass; // 效率
-
-    private String productStyleName; // 所属的款式分类
 
     private static final long serialVersionUID = 1L;
 
@@ -155,6 +161,14 @@ public class ProductionPlanningDetail implements Serializable {
 
     public void setQtyFinish(Integer qtyFinish) {
         this.qtyFinish = qtyFinish;
+    }
+
+    public BigDecimal getEfficiencyBySetting() {
+        return efficiencyBySetting;
+    }
+
+    public void setEfficiencyBySetting(BigDecimal efficiencyBySetting) {
+        this.efficiencyBySetting = efficiencyBySetting;
     }
 
     public String getSeason() {
@@ -437,6 +451,22 @@ public class ProductionPlanningDetail implements Serializable {
         this.advancecuttingDaynum = advancecuttingDaynum;
     }
 
+    public String getSizes() {
+        return sizes;
+    }
+
+    public void setSizes(String sizes) {
+        this.sizes = sizes == null ? null : sizes.trim();
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color == null ? null : color.trim();
+    }
+
     public Integer getUpdateUserId() {
         return updateUserId;
     }
@@ -480,6 +510,7 @@ public class ProductionPlanningDetail implements Serializable {
             && (this.getStartTime() == null ? other.getStartTime() == null : this.getStartTime().equals(other.getStartTime()))
             && (this.getEndTime() == null ? other.getEndTime() == null : this.getEndTime().equals(other.getEndTime()))
             && (this.getQtyFinish() == null ? other.getQtyFinish() == null : this.getQtyFinish().equals(other.getQtyFinish()))
+            && (this.getEfficiencyBySetting() == null ? other.getEfficiencyBySetting() == null : this.getEfficiencyBySetting().equals(other.getEfficiencyBySetting()))
             && (this.getSeason() == null ? other.getSeason() == null : this.getSeason().equals(other.getSeason()))
             && (this.getClientname() == null ? other.getClientname() == null : this.getClientname().equals(other.getClientname()))
             && (this.getClientstyleno() == null ? other.getClientstyleno() == null : this.getClientstyleno().equals(other.getClientstyleno()))
@@ -515,6 +546,8 @@ public class ProductionPlanningDetail implements Serializable {
             && (this.getCuttingqty() == null ? other.getCuttingqty() == null : this.getCuttingqty().equals(other.getCuttingqty()))
             && (this.getIsFinishCutting() == null ? other.getIsFinishCutting() == null : this.getIsFinishCutting().equals(other.getIsFinishCutting()))
             && (this.getAdvancecuttingDaynum() == null ? other.getAdvancecuttingDaynum() == null : this.getAdvancecuttingDaynum().equals(other.getAdvancecuttingDaynum()))
+            && (this.getSizes() == null ? other.getSizes() == null : this.getSizes().equals(other.getSizes()))
+            && (this.getColor() == null ? other.getColor() == null : this.getColor().equals(other.getColor()))
             && (this.getUpdateUserId() == null ? other.getUpdateUserId() == null : this.getUpdateUserId().equals(other.getUpdateUserId()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
@@ -531,6 +564,7 @@ public class ProductionPlanningDetail implements Serializable {
         result = prime * result + ((getStartTime() == null) ? 0 : getStartTime().hashCode());
         result = prime * result + ((getEndTime() == null) ? 0 : getEndTime().hashCode());
         result = prime * result + ((getQtyFinish() == null) ? 0 : getQtyFinish().hashCode());
+        result = prime * result + ((getEfficiencyBySetting() == null) ? 0 : getEfficiencyBySetting().hashCode());
         result = prime * result + ((getSeason() == null) ? 0 : getSeason().hashCode());
         result = prime * result + ((getClientname() == null) ? 0 : getClientname().hashCode());
         result = prime * result + ((getClientstyleno() == null) ? 0 : getClientstyleno().hashCode());
@@ -566,6 +600,8 @@ public class ProductionPlanningDetail implements Serializable {
         result = prime * result + ((getCuttingqty() == null) ? 0 : getCuttingqty().hashCode());
         result = prime * result + ((getIsFinishCutting() == null) ? 0 : getIsFinishCutting().hashCode());
         result = prime * result + ((getAdvancecuttingDaynum() == null) ? 0 : getAdvancecuttingDaynum().hashCode());
+        result = prime * result + ((getSizes() == null) ? 0 : getSizes().hashCode());
+        result = prime * result + ((getColor() == null) ? 0 : getColor().hashCode());
         result = prime * result + ((getUpdateUserId() == null) ? 0 : getUpdateUserId().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
@@ -585,6 +621,7 @@ public class ProductionPlanningDetail implements Serializable {
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
         sb.append(", qtyFinish=").append(qtyFinish);
+        sb.append(", efficiencyBySetting=").append(efficiencyBySetting);
         sb.append(", season=").append(season);
         sb.append(", clientname=").append(clientname);
         sb.append(", clientstyleno=").append(clientstyleno);
@@ -620,20 +657,14 @@ public class ProductionPlanningDetail implements Serializable {
         sb.append(", cuttingqty=").append(cuttingqty);
         sb.append(", isFinishCutting=").append(isFinishCutting);
         sb.append(", advancecuttingDaynum=").append(advancecuttingDaynum);
+        sb.append(", sizes=").append(sizes);
+        sb.append(", color=").append(color);
         sb.append(", updateUserId=").append(updateUserId);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
-    }
-
-    public Boolean getFinishCutting() {
-        return isFinishCutting;
-    }
-
-    public void setFinishCutting(Boolean finishCutting) {
-        isFinishCutting = finishCutting;
     }
 
     public BigDecimal getEfficiencyOfClass() {

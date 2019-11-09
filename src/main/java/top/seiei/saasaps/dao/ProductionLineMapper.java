@@ -20,9 +20,9 @@ public interface ProductionLineMapper {
 
     List<ProductionLine> getAll();
 
-    ProductionLine selectByName(@Param("workGroup") String workGroup, @Param("workShop") String workShop, @Param("line") String line);
+    ProductionLine selectByName(@Param("workGroup") String workGroup,@Param("workShop") String workShop,@Param("line") String line);
 
-    List<ProductionLine> selectByPrimaryKeyList(@Param("list") List<Integer> list);
+    List<ProductionLine> selectByPrimaryKeyList(List<Integer> idList);
 
-    int selectCountByPrimaryKey(Integer id);
+    Integer selectCountByPrimaryKey(Integer id);
 }

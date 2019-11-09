@@ -13,11 +13,13 @@ public class ProductionLine implements Serializable {
 
     private String lineCode;
 
+    private String defaultStyleName;
+
     private Integer peopleNum;
 
     private BigDecimal workhours;
 
-    private Boolean isInvalid;
+    private Boolean isinvalid;
 
     private Integer updateUserId;
 
@@ -57,6 +59,38 @@ public class ProductionLine implements Serializable {
 
     public void setLineCode(String lineCode) {
         this.lineCode = lineCode == null ? null : lineCode.trim();
+    }
+
+    public String getDefaultStyleName() {
+        return defaultStyleName;
+    }
+
+    public void setDefaultStyleName(String defaultStyleName) {
+        this.defaultStyleName = defaultStyleName == null ? null : defaultStyleName.trim();
+    }
+
+    public Integer getPeopleNum() {
+        return peopleNum;
+    }
+
+    public void setPeopleNum(Integer peopleNum) {
+        this.peopleNum = peopleNum;
+    }
+
+    public BigDecimal getWorkhours() {
+        return workhours;
+    }
+
+    public void setWorkhours(BigDecimal workhours) {
+        this.workhours = workhours;
+    }
+
+    public Boolean getIsinvalid() {
+        return isinvalid;
+    }
+
+    public void setIsinvalid(Boolean isinvalid) {
+        this.isinvalid = isinvalid;
     }
 
     public Integer getUpdateUserId() {
@@ -99,6 +133,10 @@ public class ProductionLine implements Serializable {
             && (this.getWorkgroup() == null ? other.getWorkgroup() == null : this.getWorkgroup().equals(other.getWorkgroup()))
             && (this.getWorkshop() == null ? other.getWorkshop() == null : this.getWorkshop().equals(other.getWorkshop()))
             && (this.getLineCode() == null ? other.getLineCode() == null : this.getLineCode().equals(other.getLineCode()))
+            && (this.getDefaultStyleName() == null ? other.getDefaultStyleName() == null : this.getDefaultStyleName().equals(other.getDefaultStyleName()))
+            && (this.getPeopleNum() == null ? other.getPeopleNum() == null : this.getPeopleNum().equals(other.getPeopleNum()))
+            && (this.getWorkhours() == null ? other.getWorkhours() == null : this.getWorkhours().equals(other.getWorkhours()))
+            && (this.getIsinvalid() == null ? other.getIsinvalid() == null : this.getIsinvalid().equals(other.getIsinvalid()))
             && (this.getUpdateUserId() == null ? other.getUpdateUserId() == null : this.getUpdateUserId().equals(other.getUpdateUserId()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
@@ -112,6 +150,10 @@ public class ProductionLine implements Serializable {
         result = prime * result + ((getWorkgroup() == null) ? 0 : getWorkgroup().hashCode());
         result = prime * result + ((getWorkshop() == null) ? 0 : getWorkshop().hashCode());
         result = prime * result + ((getLineCode() == null) ? 0 : getLineCode().hashCode());
+        result = prime * result + ((getDefaultStyleName() == null) ? 0 : getDefaultStyleName().hashCode());
+        result = prime * result + ((getPeopleNum() == null) ? 0 : getPeopleNum().hashCode());
+        result = prime * result + ((getWorkhours() == null) ? 0 : getWorkhours().hashCode());
+        result = prime * result + ((getIsinvalid() == null) ? 0 : getIsinvalid().hashCode());
         result = prime * result + ((getUpdateUserId() == null) ? 0 : getUpdateUserId().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
@@ -128,35 +170,15 @@ public class ProductionLine implements Serializable {
         sb.append(", workgroup=").append(workgroup);
         sb.append(", workshop=").append(workshop);
         sb.append(", lineCode=").append(lineCode);
+        sb.append(", defaultStyleName=").append(defaultStyleName);
+        sb.append(", peopleNum=").append(peopleNum);
+        sb.append(", workhours=").append(workhours);
+        sb.append(", isinvalid=").append(isinvalid);
         sb.append(", updateUserId=").append(updateUserId);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
-    }
-
-    public Integer getPeopleNum() {
-        return peopleNum;
-    }
-
-    public void setPeopleNum(Integer peopleNum) {
-        this.peopleNum = peopleNum;
-    }
-
-    public BigDecimal getWorkhours() {
-        return workhours;
-    }
-
-    public void setWorkhours(BigDecimal workhours) {
-        this.workhours = workhours;
-    }
-
-    public Boolean getInvalid() {
-        return isInvalid;
-    }
-
-    public void setInvalid(Boolean invalid) {
-        isInvalid = invalid;
     }
 }

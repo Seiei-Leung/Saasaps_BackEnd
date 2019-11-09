@@ -85,6 +85,7 @@ create table ProductionLine
     workgroup varchar(20) not null, --生产组别
     workshop varchar(20) not null, --生产车间
     line_code varchar(20) not null, --生产线
+    default_style_name varchar(20) not null, --默认款式分类属性
     people_num int not null, --生产线人数
     workhours decimal(10, 2) not null, --生产线工作时长
     isInvalid bit default 0, --生产线状态(0表示正常运行, 1表示失效)
@@ -186,11 +187,14 @@ create table ProductionPlanningDetail
     id int identity primary key, -- 主键
     summaryId int not null, -- 总表 Id
     is_planning bit default '0', -- 是否已排产
+    efficiency_by_setting decimal(10, 2) default null, -- 自定义的效率（自选效率）
     productionLineId int default null, -- 生产线外键 Id
     start_time datetime default null, --开始时间
     end_time datetime default null, --结束时间
     qty_finish int DEFAULT '0', --已完成数量
     season varchar(10) default null, -- 季节
+    color varchar(50) default null, -- 颜色
+    sizes varchar(50) default null, -- 尺码
     clientName varchar(100) default null, -- 客户
     clientStyleNo varchar(50) default null, -- 客户款号
     orderNo varchar(50) default null, -- 制单号
@@ -277,6 +281,25 @@ create table WorkingDateSetting
   create_time datetime not null, -- 创建时间
   update_time datetime not null, -- 更新时间
 )
+go
+--颜色设置
+if exists(select * from sysobjects where name='ColorSetting')
+drop table ColorSetting
+create table ColorSetting
+(
+  id int identity primary key, -- 主键
+  default_color varchar(20) not null, -- 默认颜色
+  default_delay_color varchar(20) default null, -- 推迟颜色
+  default_advance_color varchar(20) default null, -- 提前颜色
+  advance_color varchar(20) default null, -- 提前某天数的颜色
+  delay_color varchar(20) default null, -- 推迟某天数时的颜色
+  advance_daynum int default null, -- 提前天数
+  delay_daynum int default null, -- 推迟天数
+  user_id int not null, -- 用户ID，该设置是属于哪个用户
+  update_user_id int not null, -- 更新用户ID
+  create_time datetime not null, -- 创建时间
+  update_time datetime not null, -- 更新时间
+)
 
 -------------------------------------------插入数据--------------------------------------
 use ErpOfSeiei
@@ -287,4 +310,5 @@ INSERT INTO UserGroup VALUES ( '1', '管理员', '1', '2016-11-06 16:56:45', '20
 INSERT INTO ProductStyle VALUES ('中等款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
 INSERT INTO ProductStyle VALUES ('及肯款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
 INSERT INTO ProductStyle VALUES ('平车款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
+INSERT INTO ColorSetting VALUES ('#1FEF87', '#1FEF87', '#1FEF87', '#1FEF87', '#1FEF87', '10', '2', null, '1', '2016-11-06 16:56:45', '2017-04-04 19:27:36');
 

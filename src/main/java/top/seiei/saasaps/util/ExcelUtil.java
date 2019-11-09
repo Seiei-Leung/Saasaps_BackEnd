@@ -78,6 +78,9 @@ public class ExcelUtil {
         if (cell == null) {
             return null;
         }
+        if (StringUtils.isBlank(cell.toString())) {
+            return null;
+        }
         return Integer.parseInt(cell.toString().split("\\.")[0]);
     }
 

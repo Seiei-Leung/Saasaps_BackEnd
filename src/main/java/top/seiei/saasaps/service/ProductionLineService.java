@@ -1,7 +1,7 @@
 package top.seiei.saasaps.service;
 
+import org.apache.commons.lang3.StringUtils;
 import top.seiei.saasaps.bean.EfficiencyOfLine;
-import top.seiei.saasaps.bean.ProductionPlanningDetail;
 import top.seiei.saasaps.bean.WorkhoursOfLine;
 import top.seiei.saasaps.bean.PeopleNumOfLine;
 
@@ -141,9 +141,10 @@ public class ProductionLineService {
      */
     public ServerResponse add(User user, ProductionLine productionLine) {
         if (
-                productionLine.getWorkgroup() == null ||
-                productionLine.getWorkshop() == null ||
-                productionLine.getLineCode() == null ||
+                StringUtils.isBlank(productionLine.getDefaultStyleName()) ||
+                StringUtils.isBlank(productionLine.getWorkgroup()) ||
+                StringUtils.isBlank(productionLine.getWorkshop()) ||
+                StringUtils.isBlank(productionLine.getLineCode()) ||
                 productionLine.getPeopleNum() == null ||
                 productionLine.getWorkhours() == null ||
                 productionLine.getPeopleNum() == 0 ||
@@ -156,7 +157,7 @@ public class ProductionLineService {
             return ServerResponse.createdByError("更新失败，该组别、车间及生产线的名称与现有的生产线发生冲突");
         }
         productionLine.setUpdateUserId(user.getId());
-        productionLine.setInvalid(Const.ProductionLineStatus.WORKING);
+        productionLine.setIsinvalid(Const.ProductionLineStatus.WORKING);
         productionLine.setCreateTime(new Date());
         productionLine.setUpdateTime(new Date());
         int result = productionLineMapper.insertSelective(productionLine);
@@ -177,7 +178,7 @@ public class ProductionLineService {
             return ServerResponse.createdByError("该生产线不存在");
         }
         // 删除生产线
-        productionLine.setInvalid(Const.ProductionLineStatus.NOT_WORKING);
+        productionLine.setIsinvalid(Const.ProductionLineStatus.NOT_WORKING);
         int result = productionLineMapper.updateByPrimaryKeySelective(productionLine);
         if (result == 0) {
             return ServerResponse.createdByError("删除失败");
@@ -485,9 +486,10 @@ public class ProductionLineService {
         productionLineVO.setWorkgroup(productionLine.getWorkgroup());
         productionLineVO.setWorkshop(productionLine.getWorkshop());
         productionLineVO.setLineCode(productionLine.getLineCode());
-        productionLineVO.setInvalid(productionLine.getInvalid());
+        productionLineVO.setInvalid(productionLine.getIsinvalid());
         productionLineVO.setWorkhours(productionLine.getWorkhours());
         productionLineVO.setPeopleNum(productionLine.getPeopleNum());
+        productionLineVO.setDefaultStyleName(productionLine.getDefaultStyleName());
         if (year == null) {
             productionLineVO.setPeopleNumOfLineList(peopleNumOfLineMapper.selectByLineId(productionLine.getId()));
             productionLineVO.setWorkhoursOfLineList(workhoursOfLineMapper.selectByLineId(productionLine.getId()));
@@ -521,6 +523,7 @@ public class ProductionLineService {
         productionLineIncludePPD.setWorkhours(productionLineVO.getWorkhours());
         productionLineIncludePPD.setPeopleNum(productionLineVO.getPeopleNum());
         productionLineIncludePPD.setInvalid(productionLineVO.getInvalid());
+        productionLineIncludePPD.setDefaultStyleName(productionLineVO.getDefaultStyleName());
         productionLineIncludePPD.setEfficiencyOfLineList(productionLineVO.getEfficiencyOfLineList());
         productionLineIncludePPD.setPeopleNumOfLineList(productionLineVO.getPeopleNumOfLineList());
         productionLineIncludePPD.setWorkhoursOfLineList(productionLineVO.getWorkhoursOfLineList());

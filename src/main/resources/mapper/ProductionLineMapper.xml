@@ -6,15 +6,17 @@
     <result column="workgroup" jdbcType="VARCHAR" property="workgroup" />
     <result column="workshop" jdbcType="VARCHAR" property="workshop" />
     <result column="line_code" jdbcType="VARCHAR" property="lineCode" />
+    <result column="default_style_name" jdbcType="VARCHAR" property="defaultStyleName" />
     <result column="people_num" jdbcType="INTEGER" property="peopleNum" />
     <result column="workhours" jdbcType="DECIMAL" property="workhours" />
-    <result column="isInvalid" jdbcType="BIT" property="isInvalid" />
+    <result column="isInvalid" jdbcType="BIT" property="isinvalid" />
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, workgroup, workshop, line_code, people_num, workhours, isInvalid, update_user_id, create_time, update_time
+    id, workgroup, workshop, line_code, default_style_name, people_num, workhours, isInvalid, 
+    update_user_id, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -28,10 +30,12 @@
   </delete>
   <insert id="insert" parameterType="top.seiei.saasaps.bean.ProductionLine">
     insert into ProductionLine (id, workgroup, workshop, 
-      line_code, people_num, workhours, isInvalid, update_user_id,
+      line_code, default_style_name, people_num, 
+      workhours, isInvalid, update_user_id, 
       create_time, update_time)
     values (#{id,jdbcType=INTEGER}, #{workgroup,jdbcType=VARCHAR}, #{workshop,jdbcType=VARCHAR}, 
-      #{lineCode,jdbcType=VARCHAR}, #{peopleNum,jdbcType=INTEGER}, #{workhours,jdbcType=DOUBLE}, #{isInvalid,jdbcType=BIT}, #{updateUserId,jdbcType=INTEGER},
+      #{lineCode,jdbcType=VARCHAR}, #{defaultStyleName,jdbcType=VARCHAR}, #{peopleNum,jdbcType=INTEGER}, 
+      #{workhours,jdbcType=DECIMAL}, #{isinvalid,jdbcType=BIT}, #{updateUserId,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="top.seiei.saasaps.bean.ProductionLine" useGeneratedKeys="true" keyProperty="id">
@@ -49,13 +53,16 @@
       <if test="lineCode != null">
         line_code,
       </if>
+      <if test="defaultStyleName != null">
+        default_style_name,
+      </if>
       <if test="peopleNum != null">
         people_num,
       </if>
       <if test="workhours != null">
         workhours,
       </if>
-      <if test="isInvalid != null">
+      <if test="isinvalid != null">
         isInvalid,
       </if>
       <if test="updateUserId != null">
@@ -81,14 +88,17 @@
       <if test="lineCode != null">
         #{lineCode,jdbcType=VARCHAR},
       </if>
+      <if test="defaultStyleName != null">
+        #{defaultStyleName,jdbcType=VARCHAR},
+      </if>
       <if test="peopleNum != null">
         #{peopleNum,jdbcType=INTEGER},
       </if>
       <if test="workhours != null">
-        #{workhours,jdbcType=DOUBLE},
+        #{workhours,jdbcType=DECIMAL},
       </if>
-      <if test="isInvalid != null">
-        #{isInvalid,jdbcType=BIT},
+      <if test="isinvalid != null">
+        #{isinvalid,jdbcType=BIT},
       </if>
       <if test="updateUserId != null">
         #{updateUserId,jdbcType=INTEGER},
@@ -113,14 +123,17 @@
       <if test="lineCode != null">
         line_code = #{lineCode,jdbcType=VARCHAR},
       </if>
+      <if test="defaultStyleName != null">
+        default_style_name = #{defaultStyleName,jdbcType=VARCHAR},
+      </if>
       <if test="peopleNum != null">
         people_num = #{peopleNum,jdbcType=INTEGER},
       </if>
       <if test="workhours != null">
-        workhours = #{workhours,jdbcType=DOUBLE},
+        workhours = #{workhours,jdbcType=DECIMAL},
       </if>
-      <if test="isInvalid != null">
-        isInvalid = #{isInvalid,jdbcType=BIT},
+      <if test="isinvalid != null">
+        isInvalid = #{isinvalid,jdbcType=BIT},
       </if>
       <if test="updateUserId != null">
         update_user_id = #{updateUserId,jdbcType=INTEGER},
@@ -139,9 +152,10 @@
     set workgroup = #{workgroup,jdbcType=VARCHAR},
       workshop = #{workshop,jdbcType=VARCHAR},
       line_code = #{lineCode,jdbcType=VARCHAR},
+      default_style_name = #{defaultStyleName,jdbcType=VARCHAR},
       people_num = #{peopleNum,jdbcType=INTEGER},
-      workhours = #{workhours,jdbcType=DOUBLE},
-      isInvalid = #{isInvalid,jdbcType=BIT},
+      workhours = #{workhours,jdbcType=DECIMAL},
+      isInvalid = #{isinvalid,jdbcType=BIT},
       update_user_id = #{updateUserId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}

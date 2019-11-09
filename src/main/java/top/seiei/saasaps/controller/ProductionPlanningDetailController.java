@@ -2,6 +2,7 @@ package top.seiei.saasaps.controller;
 
 import java.util.Date;
 
+import org.apache.logging.log4j.core.jmx.Server;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -102,6 +103,8 @@ public class ProductionPlanningDetailController {
         productionPlanningDetail.setCuttingqty(StringUtil.strToInteger(params.get("cuttingqty")));
         productionPlanningDetail.setIsFinishCutting(StringUtil.strToBoolean(params.get("isFinishCutting")));
         productionPlanningDetail.setAdvancecuttingDaynum(StringUtil.strToInteger(params.get("advancecuttingDaynum")));
+        productionPlanningDetail.setColor(params.get("color"));
+        productionPlanningDetail.setSizes(params.get("sizes"));
         productionPlanningDetail.setUpdateUserId(user.getId());
         productionPlanningDetail.setUpdateTime(new Date());
         return productionPlanningDetailService.updateDetail(user, productionPlanningDetail);
@@ -138,10 +141,23 @@ public class ProductionPlanningDetailController {
      * @param params 数据列表
      * @return
      */
-    @RequestMapping("updateProgress")
+    @RequestMapping(value = "updateProgress", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse updateProgress(HttpSession session,@RequestBody List<Map<String, String>> params) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         return productionPlanningDetailService.updateProgress(user, params);
+    }
+
+    /**
+     * 排产器删除已排产计划
+     * @param session session 对象
+     * @param id 排产进度 Id
+     * @return
+     */
+    @RequestMapping("resetProgress")
+    @ResponseBody
+    public ServerResponse resetProgress(HttpSession session, Integer id) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        return productionPlanningDetailService.resetProgress(user, id);
     }
 }

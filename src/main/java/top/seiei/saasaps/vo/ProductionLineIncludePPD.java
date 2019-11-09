@@ -24,6 +24,8 @@ public class ProductionLineIncludePPD {
 
     private Boolean isInvalid;
 
+    private String defaultStyleName;
+
     private List<EfficiencyOfLine> efficiencyOfLineList;
 
     private List<PeopleNumOfLine> peopleNumOfLineList;
@@ -119,5 +121,13 @@ public class ProductionLineIncludePPD {
 
     public void setProductionPlanningDetailList(List<ProductionPlanningDetail> productionPlanningDetailList) {
         this.productionPlanningDetailList = productionPlanningDetailList;
+    }
+
+    public String getDefaultStyleName() {
+        return defaultStyleName;
+    }
+
+    public void setDefaultStyleName(String defaultStyleName) {
+        this.defaultStyleName = defaultStyleName;
     }
 }
