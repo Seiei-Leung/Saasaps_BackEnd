@@ -266,6 +266,7 @@ public class ProductionPlanningDetailService {
             Integer productionLineId = Integer.parseInt(item.get("productionLineId"));
             Integer qtyFinish = Integer.parseInt(item.get("qtyFinish")); // 更新工作完成数量
             Integer qtyofbatcheddelivery = Integer.parseInt(item.get("qtyofbatcheddelivery")); // 更新计划数量
+            BigDecimal efficiencyBySetting = StringUtil.strToBigDeciaml(item.get("efficiencyOfSetting")); // 更新自选效率
 
             ProductionPlanningDetail productionPlanningDetail = productionPlanningDetailMapper.selectByPrimaryKey(id);
             if (productionPlanningDetail == null) {
@@ -281,6 +282,7 @@ public class ProductionPlanningDetailService {
             productionPlanningDetail1ForUpdate.setQtyofbatcheddelivery(qtyofbatcheddelivery);
             productionPlanningDetail1ForUpdate.setUpdateUserId(user.getId());
             productionPlanningDetail1ForUpdate.setUpdateTime(new Date());
+            productionPlanningDetail1ForUpdate.setEfficiencyBySetting(efficiencyBySetting);
             productionPlanningDetailList.add(productionPlanningDetail1ForUpdate);
         }
         for (ProductionPlanningDetail item : productionPlanningDetailList) {
@@ -292,7 +294,9 @@ public class ProductionPlanningDetailService {
             Date startTime = new Date(Long.parseLong(item.get("startTime")));
             Date endTime = new Date(Long.parseLong(item.get("endTime")));
             Integer productionLineId = Integer.parseInt(item.get("productionLineId"));
+            Integer qtyFinish = Integer.parseInt(item.get("qtyFinish")); // 更新工作完成数量
             Integer qtyofbatcheddelivery = Integer.parseInt(item.get("qtyofbatcheddelivery")); // 更新计划数量
+            BigDecimal efficiencyBySetting = StringUtil.strToBigDeciaml(item.get("efficiencyOfSetting")); // 更新自选效率
             Integer parentId = Integer.parseInt(item.get("parentId"));
             ProductionPlanningDetail productionPlanningDetailOfParent = productionPlanningDetailMapper.selectByPrimaryKey(parentId); // 拆单前的原排产
             productionPlanningDetailOfParent.setId(null);
@@ -304,6 +308,8 @@ public class ProductionPlanningDetailService {
             productionPlanningDetailOfParent.setCreateTime(new Date());
             productionPlanningDetailOfParent.setUpdateTime(new Date());
             productionPlanningDetailOfParent.setUpdateUserId(user.getId());
+            productionPlanningDetailOfParent.setEfficiencyBySetting(efficiencyBySetting);
+            productionPlanningDetailOfParent.setQtyFinish(qtyFinish);
             productionPlanningDetailListForInsert.add(productionPlanningDetailOfParent);
         }
         for (ProductionPlanningDetail item : productionPlanningDetailListForInsert) {

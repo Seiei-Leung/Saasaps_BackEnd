@@ -304,11 +304,11 @@ create table ColorSetting
 -------------------------------------------插入数据--------------------------------------
 use ErpOfSeiei
 go
-INSERT INTO UserMsg VALUES ('1', '管理员', 'admin', '2', '1936246BB4D209F363A0EB93413C4191', '123@qq.com', '123456789', '1', '1', '2016-11-06 16:56:45', '2017-04-04 19:27:36');
+INSERT INTO UserMsg VALUES ('管理员', 'admin', '2', '1936246BB4D209F363A0EB93413C4191', '123@qq.com', '123456789', '1', '1', '2016-11-06 16:56:45', '2017-04-04 19:27:36');
 INSERT INTO UserGroup VALUES ( '0', 'ROOT', '1', '2016-11-06 16:56:45', '2017-04-04 19:27:36');
 INSERT INTO UserGroup VALUES ( '1', '管理员', '1', '2016-11-06 16:56:45', '2017-04-04 19:27:36');
 INSERT INTO ProductStyle VALUES ('中等款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
 INSERT INTO ProductStyle VALUES ('及肯款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
 INSERT INTO ProductStyle VALUES ('平车款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
-INSERT INTO ColorSetting VALUES ('#1FEF87', '#1FEF87', '#1FEF87', '#1FEF87', '#1FEF87', '10', '2', null, '1', '2016-11-06 16:56:45', '2017-04-04 19:27:36');
+INSERT INTO ColorSetting VALUES ('#1FEF87', '#1FEF87', '#1FEF87', '#1FEF87', '#1FEF87', '10', '2', '1', '1', '2016-11-06 16:56:45', '2017-04-04 19:27:36');
 

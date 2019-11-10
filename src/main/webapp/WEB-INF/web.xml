@@ -50,6 +50,10 @@
   <!-- 对客户端请求的静态资源如图片、JS文件等的请求交由默认的servlet进行处理 -->
   <servlet-mapping>
     <servlet-name>default</servlet-name>
+    <url-pattern>*.ico</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
     <url-pattern>*.jpg</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
