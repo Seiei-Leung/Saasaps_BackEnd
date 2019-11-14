@@ -1,5 +1,4 @@
 package top.seiei.saasaps.controller;
-import java.util.Date;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,6 +52,7 @@ public class ColorSettingController {
         colorSetting.setDelayColor(params.get("delayColor"));
         colorSetting.setAdvanceDaynum(Integer.parseInt(params.get("advanceDaynum")));
         colorSetting.setDelayDaynum(Integer.parseInt(params.get("delayDaynum")));
+        colorSetting.setUnlockColor(params.get("unLockColor"));
         return colorSettingService.update(user, colorSetting);
     }
 

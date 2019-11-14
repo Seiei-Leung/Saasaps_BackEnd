@@ -44,7 +44,7 @@ public class ColorSettingService {
             colorSetting.setUpdateUserId(user.getId());
             colorSetting.setUserId(user.getId());
             colorSettingMapper.insertSelective(colorSetting);
-            return ServerResponse.createdBySuccess("更新成功");
+            return ServerResponse.createdBySuccessMessage("更新成功");
         }
         colorSetting.setId(colorSettingTemp.getId());
         colorSetting.setUpdateUserId(user.getId());

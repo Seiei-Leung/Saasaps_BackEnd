@@ -207,7 +207,7 @@ create table ProductionPlanningDetail
     deliveryOfFactory_time datetime default null, -- 工厂离厂期
     arriveWarehouse_time datetime default null, -- 到仓期
     qtyOfBatchedDelivery int default null, -- 分批走货数量
-    lining varchar(50) default null, -- 面料
+    lining varchar(500) default null, -- 面料
     liningOfStitching_time datetime default null, -- 车缝辅料期
     suppliesOfLining varchar(50) default null, -- 面料供应商
     cloth_time datetime default null, -- 布期
@@ -295,7 +295,8 @@ create table ColorSetting
   delay_color varchar(20) default null, -- 推迟某天数时的颜色
   advance_daynum int default null, -- 提前天数
   delay_daynum int default null, -- 推迟天数
-  user_id int not null, -- 用户ID，该设置是属于哪个用户
+  unlock_color varchar(20) default null, -- 解锁时的颜色
+  user_id int default null, -- 用户ID，该设置是属于哪个用户
   update_user_id int not null, -- 更新用户ID
   create_time datetime not null, -- 创建时间
   update_time datetime not null, -- 更新时间
@@ -310,5 +311,5 @@ INSERT INTO UserGroup VALUES ( '1', '管理员', '1', '2016-11-06 16:56:45', '20
 INSERT INTO ProductStyle VALUES ('中等款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
 INSERT INTO ProductStyle VALUES ('及肯款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
 INSERT INTO ProductStyle VALUES ('平车款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
-INSERT INTO ColorSetting VALUES ('#1FEF87', '#1FEF87', '#1FEF87', '#1FEF87', '#1FEF87', '10', '2', '1', '1', '2016-11-06 16:56:45', '2017-04-04 19:27:36');
+INSERT INTO ColorSetting VALUES ('#1FEF80', '#FFF001', '#0492D2', '#00D8FF', '#FF0000', '10', '2', '#ed4014', null, '1', '2016-11-06 16:56:45', '2017-04-04 19:27:36');
 

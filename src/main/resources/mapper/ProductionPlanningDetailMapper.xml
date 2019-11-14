@@ -620,7 +620,7 @@
     where
     productionLineId = #{id}
     and
-    start_time &gt;= #{time}
+    (start_time &gt;= #{time} or end_time &gt; #{time})
     and
     is_planning = '1'
     and

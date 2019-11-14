@@ -216,14 +216,14 @@ public class ProductionLineController {
     /**
      * 排产器获取生产线信息，里头包装了排产详情
      * @param session session 对象
-     * @param year 最早年份，用于查询生产线人数，工作工时
+     * @param time 查询时间，用于查询生产线人数，工作工时
      * @return
      */
     @RequestMapping("getResourceDataByUserId")
     @ResponseBody
-    public ServerResponse getResourceDataByUserId(HttpSession session, Integer year) {
+    public ServerResponse getResourceDataByUserId(HttpSession session, Long time) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
-        return productionLineService.getResourceDataByUserId(user.getId(), year);
+        return productionLineService.getResourceDataByUserId(user.getId(), time);
     }
 
 }

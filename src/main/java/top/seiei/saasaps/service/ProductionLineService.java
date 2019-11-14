@@ -18,6 +18,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -68,6 +69,9 @@ public class ProductionLineService {
      */
     public ServerResponse selectAllByUserId(Integer userId, Integer year) {
         List<ProductionLineRight> productionLineRightList = productionLineRightMapper.selectByUserId(userId);
+        if (productionLineRightList.size() == 0) {
+            return ServerResponse.createdByError("该用户没有生产线权限");
+        }
         List<Integer> idList = new ArrayList<>();
         productionLineRightList.forEach((productionLineRight -> {
             idList.add(productionLineRight.getProductLineId());
@@ -458,10 +462,17 @@ public class ProductionLineService {
     /**
      * 排产器获取生产线信息，里头包装了排产详情
      * @param userId 用户Id
-     * @param year 最早年份
+     * @param time 查询时间
      * @return
      */
-    public ServerResponse getResourceDataByUserId(Integer userId, Integer year) {
+    public ServerResponse getResourceDataByUserId(Integer userId, Long time) {
+        // 查询时间整零
+        Date dateForSearch = new Date(time);
+        dateForSearch = DateUtil.zeroSetting(dateForSearch);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateForSearch);
+        int year = calendar.get(Calendar.YEAR);
+
         ServerResponse serverResponse = selectAllByUserId(userId, year);
         if (!serverResponse.isSuccess()) {
             return serverResponse;
@@ -469,7 +480,7 @@ public class ProductionLineService {
         List<ProductionLineVO> productionLineVOList = (List<ProductionLineVO>) serverResponse.getData();
         List<ProductionLineIncludePPD> productionLineIncludePPDList = new ArrayList<>();
         for (ProductionLineVO item : productionLineVOList) {
-            ProductionLineIncludePPD productionLineIncludePPD = assembleProductionLineIncludePPD(item, year);
+            ProductionLineIncludePPD productionLineIncludePPD = assembleProductionLineIncludePPD(item, dateForSearch);
             productionLineIncludePPDList.add(productionLineIncludePPD);
         }
         return ServerResponse.createdBySuccess(productionLineIncludePPDList);
@@ -511,10 +522,10 @@ public class ProductionLineService {
     /**
      * 转化为 ProductionLineIncludePPD 对象
      * @param productionLineVO productionLineVO 对象
-     * @param year 最早年份
+     * @param dateForSearch 查询时间
      * @return
      */
-    private ProductionLineIncludePPD assembleProductionLineIncludePPD(ProductionLineVO productionLineVO, Integer year) {
+    private ProductionLineIncludePPD assembleProductionLineIncludePPD(ProductionLineVO productionLineVO, Date dateForSearch) {
         ProductionLineIncludePPD productionLineIncludePPD = new ProductionLineIncludePPD();
         productionLineIncludePPD.setId(productionLineVO.getId());
         productionLineIncludePPD.setWorkgroup(productionLineVO.getWorkgroup());
@@ -527,14 +538,8 @@ public class ProductionLineService {
         productionLineIncludePPD.setEfficiencyOfLineList(productionLineVO.getEfficiencyOfLineList());
         productionLineIncludePPD.setPeopleNumOfLineList(productionLineVO.getPeopleNumOfLineList());
         productionLineIncludePPD.setWorkhoursOfLineList(productionLineVO.getWorkhoursOfLineList());
-        Date time = null;
-        try {
-            time = DateUtil.getFirstDayOfYear(year);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         // 赋值品类效率，品类
-        List<ProductionPlanningDetail> productionPlanningDetailList = productionPlanningDetailMapper.selectByLineIdAndTime(productionLineVO.getId(), time);
+        List<ProductionPlanningDetail> productionPlanningDetailList = productionPlanningDetailMapper.selectByLineIdAndTime(productionLineVO.getId(), dateForSearch);
         List<ProductionPlanningDetail> resultProductionPlanningDetailList = productionPlanningDetailService.setEfficiencyOfClassAndProductStyleName(productionPlanningDetailList);
         productionLineIncludePPD.setProductionPlanningDetailList(resultProductionPlanningDetailList);
         return productionLineIncludePPD;

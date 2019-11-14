@@ -20,6 +20,8 @@ public class ColorSetting implements Serializable {
 
     private Integer delayDaynum;
 
+    private String unlockColor;
+
     private Integer userId;
 
     private Integer updateUserId;
@@ -94,6 +96,14 @@ public class ColorSetting implements Serializable {
         this.delayDaynum = delayDaynum;
     }
 
+    public String getUnlockColor() {
+        return unlockColor;
+    }
+
+    public void setUnlockColor(String unlockColor) {
+        this.unlockColor = unlockColor == null ? null : unlockColor.trim();
+    }
+
     public Integer getUserId() {
         return userId;
     }
@@ -146,6 +156,7 @@ public class ColorSetting implements Serializable {
             && (this.getDelayColor() == null ? other.getDelayColor() == null : this.getDelayColor().equals(other.getDelayColor()))
             && (this.getAdvanceDaynum() == null ? other.getAdvanceDaynum() == null : this.getAdvanceDaynum().equals(other.getAdvanceDaynum()))
             && (this.getDelayDaynum() == null ? other.getDelayDaynum() == null : this.getDelayDaynum().equals(other.getDelayDaynum()))
+            && (this.getUnlockColor() == null ? other.getUnlockColor() == null : this.getUnlockColor().equals(other.getUnlockColor()))
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
             && (this.getUpdateUserId() == null ? other.getUpdateUserId() == null : this.getUpdateUserId().equals(other.getUpdateUserId()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
@@ -164,6 +175,7 @@ public class ColorSetting implements Serializable {
         result = prime * result + ((getDelayColor() == null) ? 0 : getDelayColor().hashCode());
         result = prime * result + ((getAdvanceDaynum() == null) ? 0 : getAdvanceDaynum().hashCode());
         result = prime * result + ((getDelayDaynum() == null) ? 0 : getDelayDaynum().hashCode());
+        result = prime * result + ((getUnlockColor() == null) ? 0 : getUnlockColor().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
         result = prime * result + ((getUpdateUserId() == null) ? 0 : getUpdateUserId().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
@@ -185,6 +197,7 @@ public class ColorSetting implements Serializable {
         sb.append(", delayColor=").append(delayColor);
         sb.append(", advanceDaynum=").append(advanceDaynum);
         sb.append(", delayDaynum=").append(delayDaynum);
+        sb.append(", unlockColor=").append(unlockColor);
         sb.append(", userId=").append(userId);
         sb.append(", updateUserId=").append(updateUserId);
         sb.append(", createTime=").append(createTime);

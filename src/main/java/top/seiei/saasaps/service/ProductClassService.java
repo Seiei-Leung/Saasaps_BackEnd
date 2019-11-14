@@ -121,11 +121,11 @@ public class ProductClassService {
         }
 
         // 检查计件范围
-        ServerResponse serverResponse = getProductClassEfficiencyByProductClassNameAndQtyPlan(productClass.getName(), updateProductClassEfficiency.getStartQuantity());
+        ServerResponse serverResponse = getProductClassEfficiencyByProductClassNameAndQtyPlan2(productClass.getName(), updateProductClassEfficiency.getStartQuantity());
         if (serverResponse.isSuccess() && ((ProductClassEfficiency) serverResponse.getData()).getId() != updateProductClassEfficiency.getId()) {
             return ServerResponse.createdByError("该产品类的计件范围效率与其它已定义的计件范围效率发生冲突");
         }
-        serverResponse = getProductClassEfficiencyByProductClassNameAndQtyPlan(productClass.getName(), updateProductClassEfficiency.getEndQuantity());
+        serverResponse = getProductClassEfficiencyByProductClassNameAndQtyPlan2(productClass.getName(), updateProductClassEfficiency.getEndQuantity());
         if (serverResponse.isSuccess() && ((ProductClassEfficiency) serverResponse.getData()).getId() != updateProductClassEfficiency.getId()) {
             return ServerResponse.createdByError("该产品类的计件范围效率与其它已定义的计件范围效率发生冲突");
         }
@@ -189,11 +189,15 @@ public class ProductClassService {
         }
         ServerResponse serverResponse = getProductClassEfficiencyByProductClassNameAndQtyPlan(productClass.getName(), productClassEfficiency.getStartQuantity());
         if (serverResponse.isSuccess()) {
-            return ServerResponse.createdByError("该产品类的计件范围效率与其它已定义的计件范围效率发生冲突");
+            if (productClass.getEfficiency().compareTo((BigDecimal) serverResponse.getData()) != 0) {
+                return ServerResponse.createdByError("该产品类的计件范围效率与其它已定义的计件范围效率发生冲突");
+            }
         }
         serverResponse = getProductClassEfficiencyByProductClassNameAndQtyPlan(productClass.getName(), productClassEfficiency.getEndQuantity());
         if (serverResponse.isSuccess()) {
-            return ServerResponse.createdByError("该产品类的计件范围效率与其它已定义的计件范围效率发生冲突");
+            if (productClass.getEfficiency().compareTo((BigDecimal) serverResponse.getData()) != 0) {
+                return ServerResponse.createdByError("该产品类的计件范围效率与其它已定义的计件范围效率发生冲突");
+            }
         }
         productClassEfficiency.setUpdateUserId(user.getId());
         productClassEfficiency.setCreateTime(new Date());
@@ -234,5 +238,25 @@ public class ProductClassService {
         return ServerResponse.createdBySuccess(productClassEfficiency.getEfficiency());
     }
 
-
+    public ServerResponse<ProductClassEfficiency> getProductClassEfficiencyByProductClassNameAndQtyPlan2(String productionClassName, Integer qtyPlan) {
+        ProductClass productClass = productClassMapper.selectByProductClassName(productionClassName);
+        if (productClass == null) {
+            return ServerResponse.createdByError("该产品类不存在");
+        }
+        List<ProductClassEfficiency> productClassEfficiencyList = productClassEfficiencyMapper.selectByProductClassId(productClass.getId());
+        ProductClassEfficiency productClassEfficiency = null;
+        for (ProductClassEfficiency item : productClassEfficiencyList) {
+            if (item.getStartQuantity() <= qtyPlan && qtyPlan <= item.getEndQuantity()) {
+                if (productClassEfficiency == null) {
+                    productClassEfficiency = item;
+                } else {
+                    return ServerResponse.createdByError("该产品类当前计划件数对应的效率存在一个以上");
+                }
+            }
+        }
+        if (productClassEfficiency == null) {
+            return ServerResponse.createdByError("没有定义该效率");
+        }
+        return ServerResponse.createdBySuccess(productClassEfficiency);
+    }
 }

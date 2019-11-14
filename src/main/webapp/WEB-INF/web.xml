@@ -8,6 +8,11 @@
     <param-value>classpath:spring/applicationContext.xml</param-value>
   </context-param>
 
+  <!-- session 失效时间，负数或0为不限制session失效时间 -->
+  <session-config>
+    <session-timeout>60</session-timeout>
+  </session-config>
+
   <!-- 防止Spring内存溢出监听器，应该配置在web.xml中与Spring相关监听器中的第一个位置 -->
   <listener>
     <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
