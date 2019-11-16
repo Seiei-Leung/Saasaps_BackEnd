@@ -296,6 +296,7 @@ create table ColorSetting
   advance_daynum int default null, -- 提前天数
   delay_daynum int default null, -- 推迟天数
   unlock_color varchar(20) default null, -- 解锁时的颜色
+  selected_color varchar(20) default null, -- 选定时的颜色
   user_id int default null, -- 用户ID，该设置是属于哪个用户
   update_user_id int not null, -- 更新用户ID
   create_time datetime not null, -- 创建时间
@@ -311,5 +312,5 @@ INSERT INTO UserGroup VALUES ( '1', '管理员', '1', '2016-11-06 16:56:45', '20
 INSERT INTO ProductStyle VALUES ('中等款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
 INSERT INTO ProductStyle VALUES ('及肯款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
 INSERT INTO ProductStyle VALUES ('平车款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
-INSERT INTO ColorSetting VALUES ('#1FEF80', '#FFF001', '#0492D2', '#00D8FF', '#FF0000', '10', '2', '#ed4014', null, '1', '2016-11-06 16:56:45', '2017-04-04 19:27:36');
+INSERT INTO ColorSetting VALUES ('#1FEF80', '#FFF001', '#0492D2', '#00D8FF', '#FF0000', '10', '2', '#ed4014', '#FF00E3', null, '1', '2016-11-06 16:56:45', '2017-04-04 19:27:36');
 

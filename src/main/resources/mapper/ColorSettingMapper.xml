@@ -11,6 +11,7 @@
     <result column="advance_daynum" jdbcType="INTEGER" property="advanceDaynum" />
     <result column="delay_daynum" jdbcType="INTEGER" property="delayDaynum" />
     <result column="unlock_color" jdbcType="VARCHAR" property="unlockColor" />
+    <result column="selected_color" jdbcType="VARCHAR" property="selectedColor" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -18,8 +19,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, default_color, default_delay_color, default_advance_color, advance_color, delay_color, 
-    advance_daynum, delay_daynum, unlock_color, user_id, update_user_id, create_time, 
-    update_time
+    advance_daynum, delay_daynum, unlock_color, selected_color, user_id, update_user_id, 
+    create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -35,13 +36,13 @@
     insert into ColorSetting (id, default_color, default_delay_color, 
       default_advance_color, advance_color, delay_color, 
       advance_daynum, delay_daynum, unlock_color, 
-      user_id, update_user_id, create_time, 
-      update_time)
+      selected_color, user_id, update_user_id, 
+      create_time, update_time)
     values (#{id,jdbcType=INTEGER}, #{defaultColor,jdbcType=VARCHAR}, #{defaultDelayColor,jdbcType=VARCHAR}, 
       #{defaultAdvanceColor,jdbcType=VARCHAR}, #{advanceColor,jdbcType=VARCHAR}, #{delayColor,jdbcType=VARCHAR}, 
       #{advanceDaynum,jdbcType=INTEGER}, #{delayDaynum,jdbcType=INTEGER}, #{unlockColor,jdbcType=VARCHAR}, 
-      #{userId,jdbcType=INTEGER}, #{updateUserId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{selectedColor,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, #{updateUserId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="top.seiei.saasaps.bean.ColorSetting">
     insert into ColorSetting
@@ -72,6 +73,9 @@
       </if>
       <if test="unlockColor != null">
         unlock_color,
+      </if>
+      <if test="selectedColor != null">
+        selected_color,
       </if>
       <if test="userId != null">
         user_id,
@@ -114,6 +118,9 @@
       <if test="unlockColor != null">
         #{unlockColor,jdbcType=VARCHAR},
       </if>
+      <if test="selectedColor != null">
+        #{selectedColor,jdbcType=VARCHAR},
+      </if>
       <if test="userId != null">
         #{userId,jdbcType=INTEGER},
       </if>
@@ -155,6 +162,9 @@
       <if test="unlockColor != null">
         unlock_color = #{unlockColor,jdbcType=VARCHAR},
       </if>
+      <if test="selectedColor != null">
+        selected_color = #{selectedColor,jdbcType=VARCHAR},
+      </if>
       <if test="userId != null">
         user_id = #{userId,jdbcType=INTEGER},
       </if>
@@ -180,6 +190,7 @@
       advance_daynum = #{advanceDaynum,jdbcType=INTEGER},
       delay_daynum = #{delayDaynum,jdbcType=INTEGER},
       unlock_color = #{unlockColor,jdbcType=VARCHAR},
+      selected_color = #{selectedColor,jdbcType=VARCHAR},
       user_id = #{userId,jdbcType=INTEGER},
       update_user_id = #{updateUserId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},

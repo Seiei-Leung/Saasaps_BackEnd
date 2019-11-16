@@ -53,6 +53,7 @@ public class ColorSettingController {
         colorSetting.setAdvanceDaynum(Integer.parseInt(params.get("advanceDaynum")));
         colorSetting.setDelayDaynum(Integer.parseInt(params.get("delayDaynum")));
         colorSetting.setUnlockColor(params.get("unLockColor"));
+        colorSetting.setSelectedColor(params.get("selectedColor"));
         return colorSettingService.update(user, colorSetting);
     }
 
