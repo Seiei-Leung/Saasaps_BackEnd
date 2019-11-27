@@ -35,7 +35,7 @@ public class ExcelUtil {
         Date date = null;
         if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
             date = DateUtil.zeroSetting(new SimpleDateFormat("yyyy-MM-dd").parse(cell.toString()));
-        } else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+        } else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC || cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
             date = cell.getDateCellValue();
         }
         return date;
@@ -55,6 +55,21 @@ public class ExcelUtil {
         if (cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
             return Double.toString(cell.getNumericCellValue());
         }
+        return cell.toString();
+    }
+
+    /**
+     * 获取字符串类型的 cell 值
+     * @param row row 对象
+     * @param cellIndex 列索引
+     * @return
+     */
+    public static String getPrueStringCell(Row row, Integer cellIndex) {
+        Cell cell = row.getCell(cellIndex);
+        if (cell == null) {
+            return null;
+        }
+        cell.setCellType(Cell.CELL_TYPE_STRING);
         return cell.toString();
     }
 

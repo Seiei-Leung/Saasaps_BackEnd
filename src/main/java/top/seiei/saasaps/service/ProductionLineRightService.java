@@ -106,7 +106,7 @@ public class ProductionLineRightService {
      * 更新权限
      * @param admin 管理员
      * @param userId 被更新的用户 ID
-     * @param list 权限列表
+     * @param list 权限生产线的 id 列表
      * @return 是否更新成功
      */
     @Transactional
@@ -121,10 +121,12 @@ public class ProductionLineRightService {
         ServerResponse<List<ProductionLineRight>> serverResponse = selectByUserId(userId);
         List<Integer> listFromDataBase = new ArrayList<>();
         int resultCount;
+        // 更新剔开的生产线权限
         if (serverResponse.isSuccess()) {
             for (ProductionLineRight item : serverResponse.getData()) {
-                listFromDataBase.add(item.getId());
-                if (!list.contains(item.getId())) {
+                listFromDataBase.add(item.getProductLineId());
+                // 比较已经记录的生产线权限 id
+                if (!list.contains(item.getProductLineId())) {
                     resultCount = productionLineRightMapper.deleteByPrimaryKey(item.getId());
                     if (resultCount == 0) {
                         return ServerResponse.createdByError("更新失败");

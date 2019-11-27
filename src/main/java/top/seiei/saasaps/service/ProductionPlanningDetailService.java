@@ -71,15 +71,18 @@ public class ProductionPlanningDetailService {
                 summaryOfProductionPlanningDetailMapper.insertSelective(summaryOfProductionPlanningDetail);
                 for (int rowIndex=1; rowIndex<rowCount; rowIndex++) {
                     Row rowItem = sheet.getRow(rowIndex);
+                    if (StringUtils.isBlank(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.season")))) {
+                        break;
+                    }
                     ProductionPlanningDetail productionPlanningDetail = new ProductionPlanningDetail();
                     productionPlanningDetail.setSummaryid(summaryOfProductionPlanningDetail.getId());
                     productionPlanningDetail.setSeason(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.season")));
                     productionPlanningDetail.setClientname(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.clientName")));
                     productionPlanningDetail.setClientstyleno(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.clientStyleNo")));
-                    productionPlanningDetail.setOrderno(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.orderNo")));
+                    productionPlanningDetail.setOrderno(ExcelUtil.getPrueStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.orderNo")));
                     productionPlanningDetail.setOrdernum(ExcelUtil.getIntegerCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.orderNum")));
                     productionPlanningDetail.setOrderkind(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.orderKind")));
-                    productionPlanningDetail.setStyleno(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.styleNo")));
+                    productionPlanningDetail.setStyleno(ExcelUtil.getPrueStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.styleNo")));
                     productionPlanningDetail.setGoodname(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.goodName")));
                     productionPlanningDetail.setStyle(ExcelUtil.getStringCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.style")));
                     productionPlanningDetail.setDeliveryofcontractTime(ExcelUtil.getDateCell(rowItem, PropertiesUtil.getIntegerProperty("excel.productionPlanningDetail.deliveryOfContract_time")));
