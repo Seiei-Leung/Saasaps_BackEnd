@@ -8,6 +8,8 @@ public class ArgumentSetting implements Serializable {
 
     private Boolean afterMinusorchangeefficiencyHasremovegapmodel;
 
+    private Boolean afterMinusHasamend;
+
     private Integer updateUserId;
 
     private Date createTime;
@@ -30,6 +32,14 @@ public class ArgumentSetting implements Serializable {
 
     public void setAfterMinusorchangeefficiencyHasremovegapmodel(Boolean afterMinusorchangeefficiencyHasremovegapmodel) {
         this.afterMinusorchangeefficiencyHasremovegapmodel = afterMinusorchangeefficiencyHasremovegapmodel;
+    }
+
+    public Boolean getAfterMinusHasamend() {
+        return afterMinusHasamend;
+    }
+
+    public void setAfterMinusHasamend(Boolean afterMinusHasamend) {
+        this.afterMinusHasamend = afterMinusHasamend;
     }
 
     public Integer getUpdateUserId() {
@@ -70,6 +80,7 @@ public class ArgumentSetting implements Serializable {
         ArgumentSetting other = (ArgumentSetting) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getAfterMinusorchangeefficiencyHasremovegapmodel() == null ? other.getAfterMinusorchangeefficiencyHasremovegapmodel() == null : this.getAfterMinusorchangeefficiencyHasremovegapmodel().equals(other.getAfterMinusorchangeefficiencyHasremovegapmodel()))
+            && (this.getAfterMinusHasamend() == null ? other.getAfterMinusHasamend() == null : this.getAfterMinusHasamend().equals(other.getAfterMinusHasamend()))
             && (this.getUpdateUserId() == null ? other.getUpdateUserId() == null : this.getUpdateUserId().equals(other.getUpdateUserId()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
@@ -81,6 +92,7 @@ public class ArgumentSetting implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getAfterMinusorchangeefficiencyHasremovegapmodel() == null) ? 0 : getAfterMinusorchangeefficiencyHasremovegapmodel().hashCode());
+        result = prime * result + ((getAfterMinusHasamend() == null) ? 0 : getAfterMinusHasamend().hashCode());
         result = prime * result + ((getUpdateUserId() == null) ? 0 : getUpdateUserId().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
@@ -95,6 +107,7 @@ public class ArgumentSetting implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", afterMinusorchangeefficiencyHasremovegapmodel=").append(afterMinusorchangeefficiencyHasremovegapmodel);
+        sb.append(", afterMinusHasamend=").append(afterMinusHasamend);
         sb.append(", updateUserId=").append(updateUserId);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
