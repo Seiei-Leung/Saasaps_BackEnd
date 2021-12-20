@@ -159,5 +159,4 @@ public class FactoryCalendarController {
         }
         return factoryCalendarService.getFactoryCalendarByYear(years);
     }
-
 }

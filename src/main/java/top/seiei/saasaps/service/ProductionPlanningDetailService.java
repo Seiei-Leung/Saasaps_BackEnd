@@ -233,11 +233,11 @@ public class ProductionPlanningDetailService {
         List<ProductionPlanningDetail> resultProductionPlanningDetailList = new ArrayList<>();
         List<ProductClass> productClassList = productClassMapper.selectAll();
         for (ProductionPlanningDetail item : productionPlanningDetailList) {
-            ServerResponse serverResponse = productClassService.getProductClassEfficiencyByProductClassNameAndQtyPlan(item.getStyle(), item.getQtyofbatcheddelivery());
+            ServerResponse serverResponse = productClassService.getProductClassEfficiencyByProductClassNameAndQtyPlan(item.getGoodname(), item.getQtyofbatcheddelivery());
             if (serverResponse.isSuccess()) {
                 item.setEfficiencyOfClass((BigDecimal) serverResponse.getData());
                 for (ProductClass item2 : productClassList) {
-                    if (StringUtils.equals(item2.getName(), item.getStyle())) {
+                    if (StringUtils.equals(item2.getName(), item.getGoodname())) {
                         item.setProductStyleName(item2.getProductStyleName());
                     }
                 }

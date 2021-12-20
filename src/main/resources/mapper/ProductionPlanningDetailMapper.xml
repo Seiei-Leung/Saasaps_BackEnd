@@ -624,7 +624,7 @@
     and
     is_planning = '1'
     and
-    style
+    goodName
     in
     (select name from ProductClass)
     order by
