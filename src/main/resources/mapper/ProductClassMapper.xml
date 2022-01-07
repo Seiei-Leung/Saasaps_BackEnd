@@ -9,9 +9,11 @@
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="prophase_low_efficiency" jdbcType="DECIMAL" property="prophaseLowEfficiency" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, product_style_name, efficiency, update_user_id, create_time, update_time
+    id, name, product_style_name, efficiency, update_user_id, create_time, update_time, 
+    prophase_low_efficiency
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -26,12 +28,12 @@
   <insert id="insert" parameterType="top.seiei.saasaps.bean.ProductClass">
     insert into ProductClass (id, name, product_style_name, 
       efficiency, update_user_id, create_time, 
-      update_time)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{productStyleName,jdbcType=INTEGER},
+      update_time, prophase_low_efficiency)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{productStyleName,jdbcType=VARCHAR}, 
       #{efficiency,jdbcType=DECIMAL}, #{updateUserId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{updateTime,jdbcType=TIMESTAMP}, #{prophaseLowEfficiency,jdbcType=DECIMAL})
   </insert>
-  <insert id="insertSelective" parameterType="top.seiei.saasaps.bean.ProductClass" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="top.seiei.saasaps.bean.ProductClass">
     insert into ProductClass
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -55,6 +57,9 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="prophaseLowEfficiency != null">
+        prophase_low_efficiency,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -64,7 +69,7 @@
         #{name,jdbcType=VARCHAR},
       </if>
       <if test="productStyleName != null">
-        #{productStyleName,jdbcType=INTEGER},
+        #{productStyleName,jdbcType=VARCHAR},
       </if>
       <if test="efficiency != null">
         #{efficiency,jdbcType=DECIMAL},
@@ -78,6 +83,9 @@
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="prophaseLowEfficiency != null">
+        #{prophaseLowEfficiency,jdbcType=DECIMAL},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="top.seiei.saasaps.bean.ProductClass">
@@ -87,7 +95,7 @@
         name = #{name,jdbcType=VARCHAR},
       </if>
       <if test="productStyleName != null">
-        product_style_name = #{productStyleName,jdbcType=INTEGER},
+        product_style_name = #{productStyleName,jdbcType=VARCHAR},
       </if>
       <if test="efficiency != null">
         efficiency = #{efficiency,jdbcType=DECIMAL},
@@ -101,17 +109,21 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="prophaseLowEfficiency != null">
+        prophase_low_efficiency = #{prophaseLowEfficiency,jdbcType=DECIMAL},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="top.seiei.saasaps.bean.ProductClass">
     update ProductClass
     set name = #{name,jdbcType=VARCHAR},
-      product_style_name = #{productStyleName,jdbcType=INTEGER},
+      product_style_name = #{productStyleName,jdbcType=VARCHAR},
       efficiency = #{efficiency,jdbcType=DECIMAL},
       update_user_id = #{updateUserId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      prophase_low_efficiency = #{prophaseLowEfficiency,jdbcType=DECIMAL}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectAll" parameterType="top.seiei.saasaps.bean.ProductClass" resultMap="BaseResultMap">

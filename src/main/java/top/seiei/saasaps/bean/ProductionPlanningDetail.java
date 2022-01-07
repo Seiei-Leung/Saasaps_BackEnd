@@ -97,6 +97,8 @@ public class ProductionPlanningDetail implements Serializable {
 
     private BigDecimal efficiencyOfClass; // 效率
 
+    private BigDecimal prophaseLowEfficiencyOfClass; // 前期低效率
+
     private String productStyleName; // 所属的款式分类
 
     private Integer updateUserId;
@@ -106,6 +108,14 @@ public class ProductionPlanningDetail implements Serializable {
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;
+
+    public BigDecimal getProphaseLowEfficiencyOfClass() {
+        return prophaseLowEfficiencyOfClass;
+    }
+
+    public void setProphaseLowEfficiencyOfClass(BigDecimal prophaseLowEfficiencyOfClass) {
+        this.prophaseLowEfficiencyOfClass = prophaseLowEfficiencyOfClass;
+    }
 
     public Integer getId() {
         return id;

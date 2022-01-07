@@ -28,11 +28,11 @@ public class LoginInterceptor implements HandlerInterceptor {
 			return true;
 		}
 		// 允许跨域，但小心前端有些框架进行跨域请求的是否默认不带cookie，导致每次申请后端都归纳到不同的 session
-//		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-//		response.setHeader("Access-Control-Max-Age", "3600");
-//		response.setHeader("Access-Control-Allow-Credentials", "true");
-//		response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
-//		response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+		//response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+		//response.setHeader("Access-Control-Max-Age", "3600");
+		//response.setHeader("Access-Control-Allow-Credentials", "true");
+		//response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+		//response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
 		
 		// 设置 json 响应对象返回
 		response.setCharacterEncoding("UTF-8");

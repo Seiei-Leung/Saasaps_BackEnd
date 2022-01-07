@@ -6,6 +6,7 @@ import top.seiei.saasaps.bean.User;
 import top.seiei.saasaps.common.Const;
 import top.seiei.saasaps.common.ServerResponse;
 import top.seiei.saasaps.service.UserService;
+import top.seiei.saasaps.util.DebugUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -57,7 +58,7 @@ public class UserController {
     @RequestMapping(value = "add", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse addUser(HttpSession session, @RequestBody User user) {
-        User admin = (User) session.getAttribute(Const.CURRENT_USER);
+        User admin = DebugUtil.getUserBySession(session, userService);
         return userService.addUser(admin, user);
     }
 
@@ -70,8 +71,8 @@ public class UserController {
     @RequestMapping("delete")
     @ResponseBody
     public ServerResponse<String> deleteUser(HttpSession session, Integer userid) {
-        User admin = (User) session.getAttribute(Const.CURRENT_USER);
-        return userService.deleteUser(admin, userid);
+        User user = DebugUtil.getUserBySession(session, userService);
+        return userService.deleteUser(user, userid);
     }
 
     /**
@@ -94,7 +95,7 @@ public class UserController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> updateUser(HttpSession session, @RequestBody User usermsg) {
-        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
-        return userService.updateUser(currentUser, usermsg);
+        User user = DebugUtil.getUserBySession(session, userService);
+        return userService.updateUser(user, usermsg);
     }
 }

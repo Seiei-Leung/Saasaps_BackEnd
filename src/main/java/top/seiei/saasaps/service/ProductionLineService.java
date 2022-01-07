@@ -538,7 +538,7 @@ public class ProductionLineService {
         productionLineIncludePPD.setEfficiencyOfLineList(productionLineVO.getEfficiencyOfLineList());
         productionLineIncludePPD.setPeopleNumOfLineList(productionLineVO.getPeopleNumOfLineList());
         productionLineIncludePPD.setWorkhoursOfLineList(productionLineVO.getWorkhoursOfLineList());
-        // 赋值品类效率，品类
+        // 赋值排产进度条详情
         List<ProductionPlanningDetail> productionPlanningDetailList = productionPlanningDetailMapper.selectByLineIdAndTime(productionLineVO.getId(), dateForSearch);
         List<ProductionPlanningDetail> resultProductionPlanningDetailList = productionPlanningDetailService.setEfficiencyOfClassAndProductStyleName(productionPlanningDetailList);
         productionLineIncludePPD.setProductionPlanningDetailList(resultProductionPlanningDetailList);

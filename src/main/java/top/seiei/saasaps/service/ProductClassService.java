@@ -155,7 +155,8 @@ public class ProductClassService {
         if (
                 productStyle == null ||
                 insertProductClass.getEfficiency() == null ||
-                StringUtils.isBlank(insertProductClass.getName())
+                StringUtils.isBlank(insertProductClass.getName()) ||
+                insertProductClass.getProphaseLowEfficiency() == null
             ) {
             return ServerResponse.createdByError("参数错误");
         }
@@ -211,7 +212,7 @@ public class ProductClassService {
     }
 
     /**
-     * 根据产品类名，计划件数获取产品类的效率信息
+     * 根据产品类名，计划件数获取产品类的效率信息,如果没有对应的效率值，则返回默认效率值
      * @param productionClassName 产品类名
      * @param qtyPlan 计划件数
      * @return
@@ -238,6 +239,12 @@ public class ProductClassService {
         return ServerResponse.createdBySuccess(productClassEfficiency.getEfficiency());
     }
 
+    /**
+     * 根据产品类名，计划件数获取产品类的效率信息,如果没有对应的效率值，则返回错误信息
+     * @param productionClassName 产品类名
+     * @param qtyPlan 计划件数
+     * @return
+     */
     public ServerResponse<ProductClassEfficiency> getProductClassEfficiencyByProductClassNameAndQtyPlan2(String productionClassName, Integer qtyPlan) {
         ProductClass productClass = productClassMapper.selectByProductClassName(productionClassName);
         if (productClass == null) {

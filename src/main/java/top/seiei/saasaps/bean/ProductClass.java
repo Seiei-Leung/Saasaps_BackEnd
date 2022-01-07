@@ -19,6 +19,8 @@ public class ProductClass implements Serializable {
 
     private Date updateTime;
 
+    private BigDecimal prophaseLowEfficiency;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -42,7 +44,7 @@ public class ProductClass implements Serializable {
     }
 
     public void setProductStyleName(String productStyleName) {
-        this.productStyleName = productStyleName;
+        this.productStyleName = productStyleName == null ? null : productStyleName.trim();
     }
 
     public BigDecimal getEfficiency() {
@@ -77,6 +79,14 @@ public class ProductClass implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public BigDecimal getProphaseLowEfficiency() {
+        return prophaseLowEfficiency;
+    }
+
+    public void setProphaseLowEfficiency(BigDecimal prophaseLowEfficiency) {
+        this.prophaseLowEfficiency = prophaseLowEfficiency;
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -95,7 +105,8 @@ public class ProductClass implements Serializable {
             && (this.getEfficiency() == null ? other.getEfficiency() == null : this.getEfficiency().equals(other.getEfficiency()))
             && (this.getUpdateUserId() == null ? other.getUpdateUserId() == null : this.getUpdateUserId().equals(other.getUpdateUserId()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
+            && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
+            && (this.getProphaseLowEfficiency() == null ? other.getProphaseLowEfficiency() == null : this.getProphaseLowEfficiency().equals(other.getProphaseLowEfficiency()));
     }
 
     @Override
@@ -109,6 +120,7 @@ public class ProductClass implements Serializable {
         result = prime * result + ((getUpdateUserId() == null) ? 0 : getUpdateUserId().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
+        result = prime * result + ((getProphaseLowEfficiency() == null) ? 0 : getProphaseLowEfficiency().hashCode());
         return result;
     }
 
@@ -125,6 +137,7 @@ public class ProductClass implements Serializable {
         sb.append(", updateUserId=").append(updateUserId);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
+        sb.append(", prophaseLowEfficiency=").append(prophaseLowEfficiency);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

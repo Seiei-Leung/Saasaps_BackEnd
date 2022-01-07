@@ -9,6 +9,8 @@ import top.seiei.saasaps.bean.User;
 import top.seiei.saasaps.common.Const;
 import top.seiei.saasaps.common.ServerResponse;
 import top.seiei.saasaps.service.ProductClassService;
+import top.seiei.saasaps.service.UserService;
+import top.seiei.saasaps.util.DebugUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -16,6 +18,9 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/api/productclass/")
 public class ProductClassController {
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private ProductClassService productClassService;
@@ -73,7 +78,7 @@ public class ProductClassController {
     @RequestMapping("updateProductClass")
     @ResponseBody
     public ServerResponse updateProductClass(HttpSession session, ProductClass productClass) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productClassService.updateProductClass(user, productClass);
     }
 
@@ -86,7 +91,7 @@ public class ProductClassController {
     @RequestMapping("updateDetail")
     @ResponseBody
     public ServerResponse updateDetail(HttpSession session, ProductClassEfficiency productClassEfficiency) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productClassService.updateDetail(user, productClassEfficiency);
     }
 
@@ -99,7 +104,7 @@ public class ProductClassController {
     @RequestMapping("insertProductClass")
     @ResponseBody
     public ServerResponse insertProductClass(HttpSession session, ProductClass productClass) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productClassService.insertProductClass(user, productClass);
     }
 
@@ -112,7 +117,7 @@ public class ProductClassController {
     @RequestMapping("insertDetail")
     @ResponseBody
     public ServerResponse insertDetail(HttpSession session, ProductClassEfficiency productClassEfficiency) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productClassService.insertDetail(user, productClassEfficiency);
     }
 

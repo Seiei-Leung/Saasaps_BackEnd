@@ -7,6 +7,8 @@ import top.seiei.saasaps.bean.*;
 import top.seiei.saasaps.common.Const;
 import top.seiei.saasaps.common.ServerResponse;
 import top.seiei.saasaps.service.ProductionLineService;
+import top.seiei.saasaps.service.UserService;
+import top.seiei.saasaps.util.DebugUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -14,6 +16,9 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/api/productionline/")
 public class ProductionLineController {
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private ProductionLineService productionLineService;
@@ -48,7 +53,7 @@ public class ProductionLineController {
     @RequestMapping("update")
     @ResponseBody
     public ServerResponse update(HttpSession session, ProductionLine productionLine) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productionLineService.update(user, productionLine);
     }
 
@@ -61,7 +66,7 @@ public class ProductionLineController {
     @RequestMapping("add")
     @ResponseBody
     public ServerResponse add(HttpSession session, ProductionLine productionLine) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productionLineService.add(user, productionLine);
     }
 
@@ -85,7 +90,7 @@ public class ProductionLineController {
     @RequestMapping("updateEfficiency")
     @ResponseBody
     public ServerResponse updateEfficiency(HttpSession session, EfficiencyOfLine efficiencyOfLine) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productionLineService.updateEfficiency(user, efficiencyOfLine);
     }
 
@@ -109,7 +114,7 @@ public class ProductionLineController {
     @RequestMapping("addEfficiency")
     @ResponseBody
     public ServerResponse addEfficiency(HttpSession session, EfficiencyOfLine efficiencyOfLine) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productionLineService.addEfficiency(user, efficiencyOfLine);
     }
 
@@ -125,7 +130,7 @@ public class ProductionLineController {
     @RequestMapping("updateWorkhours")
     @ResponseBody
     public ServerResponse updateWorkhours(HttpSession session, Integer id, long startTime, long endTime, Double workhours) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productionLineService.updateWorkhours(user, id, startTime, endTime, workhours);
     }
 
@@ -152,7 +157,7 @@ public class ProductionLineController {
     @RequestMapping("addWorkhours")
     @ResponseBody
     public ServerResponse addWorkhours(HttpSession session, Integer productionLineId, Long startTime, Long endTime, Double workhours) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productionLineService.addWorkhours(user, productionLineId, startTime, endTime, workhours);
     }
 
@@ -168,7 +173,7 @@ public class ProductionLineController {
     @RequestMapping("updatePeopleNum")
     @ResponseBody
     public ServerResponse updatePeopleNum(HttpSession session, Integer id, long startTime, long endTime, Integer peopleNum) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productionLineService.updatePeopleNum(user, id, startTime, endTime, peopleNum);
     }
 
@@ -184,7 +189,7 @@ public class ProductionLineController {
     @RequestMapping("addPeopleNum")
     @ResponseBody
     public ServerResponse addPeopleNum(HttpSession session, Integer productionLineId, Long startTime, Long endTime, Integer peopleNum) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productionLineService.addPeopleNum(user, productionLineId, startTime, endTime, peopleNum);
     }
 
@@ -207,7 +212,7 @@ public class ProductionLineController {
     @RequestMapping("getByUserId")
     @ResponseBody
     public ServerResponse selectAllByUserId(HttpSession session) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productionLineService.selectAllByUserId(user.getId(), null);
     }
 
@@ -222,8 +227,7 @@ public class ProductionLineController {
     @RequestMapping("getResourceDataByUserId")
     @ResponseBody
     public ServerResponse getResourceDataByUserId(HttpSession session, Long time) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productionLineService.getResourceDataByUserId(user.getId(), time);
     }
-
 }

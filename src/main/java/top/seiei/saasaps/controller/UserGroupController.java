@@ -10,6 +10,8 @@ import top.seiei.saasaps.bean.UserGroup;
 import top.seiei.saasaps.common.Const;
 import top.seiei.saasaps.common.ServerResponse;
 import top.seiei.saasaps.service.UserGroupService;
+import top.seiei.saasaps.service.UserService;
+import top.seiei.saasaps.util.DebugUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -19,6 +21,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/api/usergroup/")
 public class UserGroupController {
+    @Resource
+    private UserService userService;
 
     @Resource
     private UserGroupService userGroupService;
@@ -42,8 +46,8 @@ public class UserGroupController {
     @RequestMapping("delete")
     @ResponseBody
     public ServerResponse deleteUserGroup(HttpSession session, Integer id) {
-        User admin = (User) session.getAttribute(Const.CURRENT_USER);
-        if (admin.getRole() != Const.Role.ROLE_ADMIN) {
+        User user = DebugUtil.getUserBySession(session, userService);
+        if (user.getRole() != Const.Role.ROLE_ADMIN) {
             return ServerResponse.createdByError("该用户没有权限");
         }
         return userGroupService.delete(id);
@@ -58,7 +62,7 @@ public class UserGroupController {
     @RequestMapping("insert")
     @ResponseBody
     public ServerResponse insertUserGroup(HttpSession session, UserGroup userGroup) {
-        User admin = (User) session.getAttribute(Const.CURRENT_USER);
-        return userGroupService.insertUserGroup(admin, userGroup);
+        User user = DebugUtil.getUserBySession(session, userService);
+        return userGroupService.insertUserGroup(user, userGroup);
     }
 }

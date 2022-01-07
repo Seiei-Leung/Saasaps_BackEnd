@@ -2,15 +2,15 @@ package top.seiei.saasaps.controller;
 
 import java.util.Date;
 
-import org.apache.logging.log4j.core.jmx.Server;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.seiei.saasaps.bean.ProductionPlanningDetail;
 import top.seiei.saasaps.bean.User;
-import top.seiei.saasaps.common.Const;
 import top.seiei.saasaps.common.ServerResponse;
 import top.seiei.saasaps.service.ProductionPlanningDetailService;
+import top.seiei.saasaps.service.UserService;
+import top.seiei.saasaps.util.DebugUtil;
 import top.seiei.saasaps.util.StringUtil;
 
 import javax.annotation.Resource;
@@ -21,6 +21,9 @@ import java.util.Map;
 @Controller
 @RequestMapping("/api/productionplanningdetail/")
 public class ProductionPlanningDetailController {
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private ProductionPlanningDetailService productionPlanningDetailService;
@@ -34,7 +37,7 @@ public class ProductionPlanningDetailController {
     @RequestMapping(value="uploadExcel", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse uploadExcel(HttpSession session, @RequestParam("excelFile") MultipartFile excelFile) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         try {
             return productionPlanningDetailService.uploadExcel(user, excelFile);
         } catch (Exception e) {
@@ -63,7 +66,7 @@ public class ProductionPlanningDetailController {
     @RequestMapping(value = "updateDetail", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse updateDetail(HttpSession session, @RequestBody Map<String, String> params) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         ProductionPlanningDetail productionPlanningDetail = new ProductionPlanningDetail();
         productionPlanningDetail.setId(Integer.parseInt(params.get("id")));
         productionPlanningDetail.setSeason(params.get("season"));
@@ -144,7 +147,7 @@ public class ProductionPlanningDetailController {
     @RequestMapping(value = "updateProgress", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse updateProgress(HttpSession session,@RequestBody List<Map<String, String>> params) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productionPlanningDetailService.updateProgress(user, params);
     }
 
@@ -157,7 +160,7 @@ public class ProductionPlanningDetailController {
     @RequestMapping("resetProgress")
     @ResponseBody
     public ServerResponse resetProgress(HttpSession session, Integer id) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return productionPlanningDetailService.resetProgress(user, id);
     }
 }

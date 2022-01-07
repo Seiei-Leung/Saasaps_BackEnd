@@ -10,6 +10,8 @@ import top.seiei.saasaps.bean.User;
 import top.seiei.saasaps.common.Const;
 import top.seiei.saasaps.common.ServerResponse;
 import top.seiei.saasaps.service.ArgumentSettingService;
+import top.seiei.saasaps.service.UserService;
+import top.seiei.saasaps.util.DebugUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -17,6 +19,9 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/api/argumentSetting/")
 public class ArgumentSettingController {
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private ArgumentSettingService argumentSettingService;
@@ -40,7 +45,7 @@ public class ArgumentSettingController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse update(HttpSession session, @RequestBody ArgumentSetting argumentSetting) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return argumentSettingService.update(user, argumentSetting);
     }
 

@@ -6,6 +6,8 @@ import top.seiei.saasaps.bean.User;
 import top.seiei.saasaps.common.Const;
 import top.seiei.saasaps.common.ServerResponse;
 import top.seiei.saasaps.service.ProductionLineRightService;
+import top.seiei.saasaps.service.UserService;
+import top.seiei.saasaps.util.DebugUtil;
 import top.seiei.saasaps.vo.UpdatePLVO;
 
 import javax.annotation.Resource;
@@ -14,6 +16,9 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/api/productionlineright/")
 public class ProductionLineRightController {
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private ProductionLineRightService productionLineRightService;
@@ -26,8 +31,8 @@ public class ProductionLineRightController {
     @RequestMapping(value = "getall", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse getAll(HttpSession session) {
-        User admin = (User) session.getAttribute(Const.CURRENT_USER);
-        if (admin.getRole() != Const.Role.ROLE_ADMIN) {
+        User user = DebugUtil.getUserBySession(session, userService);
+        if (user.getRole() != Const.Role.ROLE_ADMIN) {
             return ServerResponse.createdByError("该用户没有权限");
         }
         return productionLineRightService.getAll();
@@ -53,11 +58,10 @@ public class ProductionLineRightController {
     @RequestMapping("update")
     @ResponseBody
     public ServerResponse update(HttpSession session,@RequestBody UpdatePLVO updatePLVO) {
-        System.out.println(updatePLVO.getList().size());
-        User admin = (User) session.getAttribute(Const.CURRENT_USER);
-        if (admin.getRole() != Const.Role.ROLE_ADMIN) {
+        User user = DebugUtil.getUserBySession(session, userService);
+        if (user.getRole() != Const.Role.ROLE_ADMIN) {
             return ServerResponse.createdByError("该用户没有权限");
         }
-        return productionLineRightService.update(admin, updatePLVO.getUserId(), updatePLVO.getList());
+        return productionLineRightService.update(user, updatePLVO.getUserId(), updatePLVO.getList());
     }
 }

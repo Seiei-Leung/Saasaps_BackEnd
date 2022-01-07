@@ -27,9 +27,9 @@
                  max-age="3600" />
     </mvc:cors>-->
     <!-- 跨域 -->
-    <mvc:cors>
+<!--    <mvc:cors>
         <mvc:mapping path="/**" allowed-origins="*" allow-credentials="true" max-age="1800" allowed-methods="GET,POST,OPTIONS"/>
-    </mvc:cors>
+    </mvc:cors>-->
 
 	<!-- 请求拦截，用户是否已登录 -->
 	<mvc:interceptors>

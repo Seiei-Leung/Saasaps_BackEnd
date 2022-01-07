@@ -147,6 +147,7 @@ create table ProductClass
     name varchar(20) not null, --产品类型名称
     product_style_name varchar(20) not null, --所属的款式分类
     efficiency decimal(10, 2) not null, --默认效率
+    prophase_low_efficiency decimal(10, 2) not null, --前三天低效率
     update_user_id int not null, --更新用户ID
     create_time datetime not null, --创建时间
     update_time datetime not null, --更新时间

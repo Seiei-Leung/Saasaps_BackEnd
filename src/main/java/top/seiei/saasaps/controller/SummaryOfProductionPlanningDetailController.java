@@ -7,6 +7,8 @@ import top.seiei.saasaps.bean.User;
 import top.seiei.saasaps.common.Const;
 import top.seiei.saasaps.common.ServerResponse;
 import top.seiei.saasaps.service.SummaryOfProductionPlanningDetailService;
+import top.seiei.saasaps.service.UserService;
+import top.seiei.saasaps.util.DebugUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -14,6 +16,9 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/api/summaryOfProductionPlanning/")
 public class SummaryOfProductionPlanningDetailController {
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private SummaryOfProductionPlanningDetailService summaryOfProductionPlanningDetailService;
@@ -41,7 +46,7 @@ public class SummaryOfProductionPlanningDetailController {
     @RequestMapping("update")
     @ResponseBody
     public ServerResponse update(HttpSession session, Integer id, String clientname, String season) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return summaryOfProductionPlanningDetailService.update(user, id, clientname, season);
     }
 
@@ -54,7 +59,6 @@ public class SummaryOfProductionPlanningDetailController {
     @RequestMapping("delete")
     @ResponseBody
     public ServerResponse delete(HttpSession session, Integer id) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
         return summaryOfProductionPlanningDetailService.delete(id);
     }
 

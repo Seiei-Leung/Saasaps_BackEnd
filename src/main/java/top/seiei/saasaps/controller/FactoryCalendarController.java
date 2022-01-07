@@ -9,6 +9,8 @@ import top.seiei.saasaps.bean.WorkingDateSetting;
 import top.seiei.saasaps.common.Const;
 import top.seiei.saasaps.common.ServerResponse;
 import top.seiei.saasaps.service.FactoryCalendarService;
+import top.seiei.saasaps.service.UserService;
+import top.seiei.saasaps.util.DebugUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -18,6 +20,9 @@ import java.util.List;
 @Controller
 @RequestMapping("/api/factoryCalendar/")
 public class FactoryCalendarController {
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private FactoryCalendarService factoryCalendarService;
@@ -41,11 +46,11 @@ public class FactoryCalendarController {
     @RequestMapping("addFactoryCalendar")
     @ResponseBody
     public ServerResponse addFactoryCalendar(HttpSession session, WorkingDateSetting workingDateSetting) {
-        User admin = (User) session.getAttribute(Const.CURRENT_USER);
-        if (admin.getRole() != Const.Role.ROLE_ADMIN) {
+        User user = DebugUtil.getUserBySession(session, userService);
+        if (user.getRole() != Const.Role.ROLE_ADMIN) {
             return ServerResponse.createdByError("该用户没有权限");
         }
-        return factoryCalendarService.addFactoryCalendar(admin, workingDateSetting);
+        return factoryCalendarService.addFactoryCalendar(user, workingDateSetting);
     }
 
     /**
@@ -57,11 +62,11 @@ public class FactoryCalendarController {
     @RequestMapping("updateFactoryCalendar")
     @ResponseBody
     public ServerResponse updateFactoryCalendar(HttpSession session, WorkingDateSetting workingDateSetting) {
-        User admin = (User) session.getAttribute(Const.CURRENT_USER);
-        if (admin.getRole() != Const.Role.ROLE_ADMIN) {
+        User user = DebugUtil.getUserBySession(session, userService);
+        if (user.getRole() != Const.Role.ROLE_ADMIN) {
             return ServerResponse.createdByError("该用户没有权限");
         }
-        return factoryCalendarService.updateFactoryCalendar(admin, workingDateSetting);
+        return factoryCalendarService.updateFactoryCalendar(user, workingDateSetting);
     }
 
     /**
@@ -73,8 +78,8 @@ public class FactoryCalendarController {
     @RequestMapping("deleteFactoryCalendar")
     @ResponseBody
     public ServerResponse deleteFactoryCalendar(HttpSession session, Integer id) {
-        User admin = (User) session.getAttribute(Const.CURRENT_USER);
-        if (admin.getRole() != Const.Role.ROLE_ADMIN) {
+        User user = DebugUtil.getUserBySession(session, userService);
+        if (user.getRole() != Const.Role.ROLE_ADMIN) {
             return ServerResponse.createdByError("该用户没有权限");
         }
         return factoryCalendarService.deleteFactoryCalendar(id);
@@ -103,11 +108,11 @@ public class FactoryCalendarController {
     @RequestMapping("addFestival")
     @ResponseBody
     public ServerResponse addFestival(HttpSession session, Integer factoryCalendarId, String festivalName, Long beginDate, Long endDate) {
-        User admin = (User) session.getAttribute(Const.CURRENT_USER);
-        if (admin.getRole() != Const.Role.ROLE_ADMIN) {
+        User user = DebugUtil.getUserBySession(session, userService);
+        if (user.getRole() != Const.Role.ROLE_ADMIN) {
             return ServerResponse.createdByError("该用户没有权限");
         }
-        return factoryCalendarService.addFestival(admin, factoryCalendarId, festivalName, beginDate, endDate);
+        return factoryCalendarService.addFestival(user, factoryCalendarId, festivalName, beginDate, endDate);
     }
 
     /**
@@ -122,11 +127,11 @@ public class FactoryCalendarController {
     @RequestMapping("updateFestival")
     @ResponseBody
     public ServerResponse updateFestival(HttpSession session, Integer id, String festivalName, Long beginDate, Long endDate) {
-        User admin = (User) session.getAttribute(Const.CURRENT_USER);
-        if (admin.getRole() != Const.Role.ROLE_ADMIN) {
+        User user = DebugUtil.getUserBySession(session, userService);
+        if (user.getRole() != Const.Role.ROLE_ADMIN) {
             return ServerResponse.createdByError("该用户没有权限");
         }
-        return factoryCalendarService.updateFestival(admin, id, festivalName, beginDate, endDate);
+        return factoryCalendarService.updateFestival(user, id, festivalName, beginDate, endDate);
     }
 
     /**
@@ -138,8 +143,8 @@ public class FactoryCalendarController {
     @RequestMapping("deleteFestival")
     @ResponseBody
     public ServerResponse deleteFestival(HttpSession session, Integer id) {
-        User admin = (User) session.getAttribute(Const.CURRENT_USER);
-        if (admin.getRole() != Const.Role.ROLE_ADMIN) {
+        User user = DebugUtil.getUserBySession(session, userService);
+        if (user.getRole() != Const.Role.ROLE_ADMIN) {
             return ServerResponse.createdByError("该用户没有权限");
         }
         return factoryCalendarService.deleteFestival(id);

@@ -10,6 +10,8 @@ import top.seiei.saasaps.bean.User;
 import top.seiei.saasaps.common.Const;
 import top.seiei.saasaps.common.ServerResponse;
 import top.seiei.saasaps.service.ColorSettingService;
+import top.seiei.saasaps.service.UserService;
+import top.seiei.saasaps.util.DebugUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -18,6 +20,9 @@ import java.util.Map;
 @Controller
 @RequestMapping("/api/colorSetting/")
 public class ColorSettingController {
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private ColorSettingService colorSettingService;
@@ -30,7 +35,7 @@ public class ColorSettingController {
     @RequestMapping("getByUserId")
     @ResponseBody
     public ServerResponse getByUserId(HttpSession session) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         return colorSettingService.getByUserId(user);
     }
 
@@ -43,7 +48,7 @@ public class ColorSettingController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse update(HttpSession session, @RequestBody Map<String, String> params) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        User user = DebugUtil.getUserBySession(session, userService);
         ColorSetting colorSetting = new ColorSetting();
         colorSetting.setDefaultColor(params.get("defaultColor"));
         colorSetting.setDefaultDelayColor(params.get("defaultDelayColor"));
@@ -56,7 +61,4 @@ public class ColorSettingController {
         colorSetting.setSelectedColor(params.get("selectedColor"));
         return colorSettingService.update(user, colorSetting);
     }
-
-
-
 }

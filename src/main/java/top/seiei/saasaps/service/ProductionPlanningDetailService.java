@@ -25,6 +25,7 @@ import javax.annotation.Resource;
 
 import org.apache.poi.ss.usermodel.*;
 import top.seiei.saasaps.util.StringUtil;
+import top.seiei.saasaps.vo.ProductionLineVO;
 
 
 @Service("productionPlanningDetailService")
@@ -196,6 +197,10 @@ public class ProductionPlanningDetailService {
         return ServerResponse.createdByError("删除成功");
     }
 
+
+
+
+
     /**
      * 获取单号
      * @return
@@ -239,6 +244,7 @@ public class ProductionPlanningDetailService {
                 for (ProductClass item2 : productClassList) {
                     if (StringUtils.equals(item2.getName(), item.getGoodname())) {
                         item.setProductStyleName(item2.getProductStyleName());
+                        item.setProphaseLowEfficiencyOfClass(item2.getProphaseLowEfficiency());
                     }
                 }
                 resultProductionPlanningDetailList.add(item);
@@ -257,13 +263,28 @@ public class ProductionPlanningDetailService {
     public ServerResponse updateProgress(User user, List<Map<String, String>> dataList) {
         List<ProductionPlanningDetail> productionPlanningDetailList = new ArrayList<>();
         List<Map<String, String>> dataListOfInsert = new ArrayList<>(); // 拆单而新增的排产进度条列表
+        List<Integer> listOfIDForLogicallyDelete = new ArrayList<>(); // 需要逻辑删除的排产进度条的 ID 列表
+        List<Integer> listOfIDForPhysicallyDelete = new ArrayList<>(); // 需要物理删除的排产进度条的 ID 列表
         for (Map<String, String> item : dataList) {
+            String idStr = item.get("id");
             // 判断是否为拆单所产生的新增排产进度条
-            if (item.get("id").contains("new")) {
+            if (idStr.contains("NEW_")) {
                 dataListOfInsert.add(item);
                 continue;
             }
+            // 判断是否为需要逻辑删除的进度条 ID 信息
+            if (idStr.contains("LOGICALLY_DELETE_")) {
+                listOfIDForLogicallyDelete.add(Integer.parseInt(idStr.replace("LOGICALLY_DELETE_", "")));
+                continue;
+            }
+            // 判断是否为需要物理删除的精度条 ID 信息
+            if (item.get("id").contains("PHYSICALLY_DELETE_")) {
+                listOfIDForPhysicallyDelete.add(Integer.parseInt(idStr.replace("PHYSICALLY_DELETE_", "")));
+                continue;
+            }
+
             Integer id = Integer.parseInt(item.get("id"));
+            String orderno = item.get("orderno");
             Date startTime = new Date(Long.parseLong(item.get("startTime")));
             Date endTime = new Date(Long.parseLong(item.get("endTime")));
             Integer productionLineId = Integer.parseInt(item.get("productionLineId"));
@@ -277,6 +298,7 @@ public class ProductionPlanningDetailService {
             }
             ProductionPlanningDetail productionPlanningDetail1ForUpdate = new ProductionPlanningDetail();
             productionPlanningDetail1ForUpdate.setId(id);
+            productionPlanningDetail1ForUpdate.setOrderno(orderno);
             productionPlanningDetail1ForUpdate.setIsPlanning(true);
             productionPlanningDetail1ForUpdate.setProductionlineid(productionLineId);
             productionPlanningDetail1ForUpdate.setStartTime(startTime);
@@ -292,8 +314,8 @@ public class ProductionPlanningDetailService {
             productionPlanningDetailMapper.updateByPrimaryKeySelective(item);
         }
         // 拆单而新增的排产进度条
-        List<ProductionPlanningDetail> productionPlanningDetailListForInsert = new ArrayList<>();
         for (Map<String, String> item : dataListOfInsert) {
+            String orderno = item.get("orderno");
             Date startTime = new Date(Long.parseLong(item.get("startTime")));
             Date endTime = new Date(Long.parseLong(item.get("endTime")));
             Integer productionLineId = Integer.parseInt(item.get("productionLineId"));
@@ -303,6 +325,7 @@ public class ProductionPlanningDetailService {
             Integer parentId = Integer.parseInt(item.get("parentId"));
             ProductionPlanningDetail productionPlanningDetailOfParent = productionPlanningDetailMapper.selectByPrimaryKey(parentId); // 拆单前的原排产
             productionPlanningDetailOfParent.setId(null);
+            productionPlanningDetailOfParent.setOrderno(orderno);
             productionPlanningDetailOfParent.setStartTime(startTime);
             productionPlanningDetailOfParent.setEndTime(endTime);
             productionPlanningDetailOfParent.setProductionlineid(productionLineId);
@@ -313,10 +336,15 @@ public class ProductionPlanningDetailService {
             productionPlanningDetailOfParent.setUpdateUserId(user.getId());
             productionPlanningDetailOfParent.setEfficiencyBySetting(efficiencyBySetting);
             productionPlanningDetailOfParent.setQtyFinish(qtyFinish);
-            productionPlanningDetailListForInsert.add(productionPlanningDetailOfParent);
+            productionPlanningDetailMapper.insertSelective(productionPlanningDetailOfParent);
         }
-        for (ProductionPlanningDetail item : productionPlanningDetailListForInsert) {
-            productionPlanningDetailMapper.insertSelective(item);
+        // 执行逻辑删除逻辑
+        for (Integer idForLogicallyDelete : listOfIDForLogicallyDelete) {
+            resetProgress(user, idForLogicallyDelete);
+        }
+        // 执行物理删除逻辑
+        for (Integer idForPhysicallyDelete : listOfIDForPhysicallyDelete) {
+            productionPlanningDetailMapper.deleteByPrimaryKey(idForPhysicallyDelete);
         }
         return ServerResponse.createdBySuccessMessage("更新成功");
     }
