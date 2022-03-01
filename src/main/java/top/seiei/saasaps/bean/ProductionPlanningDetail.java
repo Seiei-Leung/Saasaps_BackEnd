@@ -1,5 +1,8 @@
 package top.seiei.saasaps.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import top.seiei.saasaps.util.DateUtil;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;

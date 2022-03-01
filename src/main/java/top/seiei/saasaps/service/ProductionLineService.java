@@ -67,7 +67,7 @@ public class ProductionLineService {
      * @param userId 用户 ID
      * @return 权限生产线列表
      */
-    public ServerResponse selectAllByUserId(Integer userId, Integer year) {
+    public ServerResponse<List<ProductionLineVO>> selectAllByUserId(Integer userId, Integer year) {
         List<ProductionLineRight> productionLineRightList = productionLineRightMapper.selectByUserId(userId);
         if (productionLineRightList.size() == 0) {
             return ServerResponse.createdByError("该用户没有生产线权限");
@@ -491,7 +491,7 @@ public class ProductionLineService {
      * @param productionLine productionLine 对象
      * @return ProductionLineVO 对象
      */
-    private ProductionLineVO assembleProductionLineVO(ProductionLine productionLine, Integer year) {
+    public ProductionLineVO assembleProductionLineVO(ProductionLine productionLine, Integer year) {
         ProductionLineVO productionLineVO = new ProductionLineVO();
         productionLineVO.setId(productionLine.getId());
         productionLineVO.setWorkgroup(productionLine.getWorkgroup());

@@ -642,4 +642,15 @@
     order by
     deliveryOfFactory_time
   </select>
+    <select id="getSchedulingNumberOfToday" resultType="Integer">
+    SELECT COUNT(id)
+    FROM ProductionPlanningDetail
+    WHERE update_time BETWEEN #{startTime} AND #{endTime}
+    AND is_planning = '1'
+  </select>
+    <select id="getDeliveryOrderNumberOfWeek" resultType="Integer">
+    SELECT COUNT(id)
+    FROM ProductionPlanningDetail
+    WHERE deliveryOfContract_time BETWEEN #{startTime} AND #{endTime}
+  </select>
 </mapper>

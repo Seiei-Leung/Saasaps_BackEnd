@@ -1,7 +1,10 @@
 package top.seiei.saasaps.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import top.seiei.saasaps.bean.Festival;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -107,5 +110,37 @@ public class WorkingDateSettingVO {
 
     public void setFestivalList(List<Festival> festivalList) {
         this.festivalList = festivalList;
+    }
+
+    /**
+     * 判断某日是否放假
+     * @param timeStamp 某日的时间戳
+     * @return
+     */
+    @JsonIgnore
+    public Boolean isHoliday(Long timeStamp) {
+        Date searchDate = new Date(timeStamp);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(searchDate);
+        Integer weekday = calendar.get(Calendar.DAY_OF_WEEK);
+        if (!((weekday == 1 && this.sunday) ||
+                (weekday == 2 && this.monday) ||
+                (weekday == 3 && this.tuesday) ||
+                (weekday == 4 && this.wednesday) ||
+                (weekday == 5 && this.thursday) ||
+                (weekday == 6 && this.friday) ||
+                (weekday == 7 && this.saturday)))
+        {
+            return true;
+        }
+        // 判断是否在节日中
+        for (Festival festival : this.festivalList) {
+            Long startTimeStamp = festival.getBeginDate().getTime();
+            Long endTimeStamp = festival.getEndDate().getTime();
+            if (startTimeStamp <= timeStamp && timeStamp <= endTimeStamp) {
+                return true;
+            }
+        }
+        return false;
     }
 }

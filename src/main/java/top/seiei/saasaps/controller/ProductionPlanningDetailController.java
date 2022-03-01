@@ -163,4 +163,30 @@ public class ProductionPlanningDetailController {
         User user = DebugUtil.getUserBySession(session, userService);
         return productionPlanningDetailService.resetProgress(user, id);
     }
+
+    /**
+     * 新增排产、移动排产信息数据更新
+     * @param session session 对象
+     * @param params 参数数据
+     * @return
+     */
+    @RequestMapping(value = "updateMemoOfProgress", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse updateMemoOfProgress(HttpSession session,@RequestBody Map<String, String> params) {
+        User user = DebugUtil.getUserBySession(session, userService);
+        return productionPlanningDetailService.updateMemoOfProgress(user, params);
+    }
+
+    /**
+     * 删除排产进度 Memo
+     * @param session session 对象
+     * @param id 排产进度主键
+     * @return
+     */
+    @RequestMapping("deleteMemo")
+    @ResponseBody
+    public ServerResponse deleteMemo(HttpSession session, Integer id) {
+        User user = DebugUtil.getUserBySession(session, userService);
+        return productionPlanningDetailService.deleteMemo(user, id);
+    }
 }

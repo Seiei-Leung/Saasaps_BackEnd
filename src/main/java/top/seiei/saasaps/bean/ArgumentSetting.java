@@ -1,6 +1,7 @@
 package top.seiei.saasaps.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class ArgumentSetting implements Serializable {
@@ -9,6 +10,10 @@ public class ArgumentSetting implements Serializable {
     private Boolean afterMinusorchangeefficiencyHasremovegapmodel;
 
     private Boolean afterMinusHasamend;
+
+    private BigDecimal workhours;
+
+    private Integer peopleNum;
 
     private Integer updateUserId;
 
@@ -40,6 +45,22 @@ public class ArgumentSetting implements Serializable {
 
     public void setAfterMinusHasamend(Boolean afterMinusHasamend) {
         this.afterMinusHasamend = afterMinusHasamend;
+    }
+
+    public BigDecimal getWorkhours() {
+        return workhours;
+    }
+
+    public void setWorkhours(BigDecimal workhours) {
+        this.workhours = workhours;
+    }
+
+    public Integer getPeopleNum() {
+        return peopleNum;
+    }
+
+    public void setPeopleNum(Integer peopleNum) {
+        this.peopleNum = peopleNum;
     }
 
     public Integer getUpdateUserId() {
@@ -81,6 +102,8 @@ public class ArgumentSetting implements Serializable {
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getAfterMinusorchangeefficiencyHasremovegapmodel() == null ? other.getAfterMinusorchangeefficiencyHasremovegapmodel() == null : this.getAfterMinusorchangeefficiencyHasremovegapmodel().equals(other.getAfterMinusorchangeefficiencyHasremovegapmodel()))
             && (this.getAfterMinusHasamend() == null ? other.getAfterMinusHasamend() == null : this.getAfterMinusHasamend().equals(other.getAfterMinusHasamend()))
+            && (this.getWorkhours() == null ? other.getWorkhours() == null : this.getWorkhours().equals(other.getWorkhours()))
+            && (this.getPeopleNum() == null ? other.getPeopleNum() == null : this.getPeopleNum().equals(other.getPeopleNum()))
             && (this.getUpdateUserId() == null ? other.getUpdateUserId() == null : this.getUpdateUserId().equals(other.getUpdateUserId()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
@@ -93,6 +116,8 @@ public class ArgumentSetting implements Serializable {
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getAfterMinusorchangeefficiencyHasremovegapmodel() == null) ? 0 : getAfterMinusorchangeefficiencyHasremovegapmodel().hashCode());
         result = prime * result + ((getAfterMinusHasamend() == null) ? 0 : getAfterMinusHasamend().hashCode());
+        result = prime * result + ((getWorkhours() == null) ? 0 : getWorkhours().hashCode());
+        result = prime * result + ((getPeopleNum() == null) ? 0 : getPeopleNum().hashCode());
         result = prime * result + ((getUpdateUserId() == null) ? 0 : getUpdateUserId().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
@@ -108,6 +133,8 @@ public class ArgumentSetting implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", afterMinusorchangeefficiencyHasremovegapmodel=").append(afterMinusorchangeefficiencyHasremovegapmodel);
         sb.append(", afterMinusHasamend=").append(afterMinusHasamend);
+        sb.append(", workhours=").append(workhours);
+        sb.append(", peopleNum=").append(peopleNum);
         sb.append(", updateUserId=").append(updateUserId);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);

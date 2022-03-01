@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import top.seiei.saasaps.bean.User;
 import top.seiei.saasaps.common.Const;
 import top.seiei.saasaps.common.ServerResponse;
+import top.seiei.saasaps.pv.AppSessionContext;
 import top.seiei.saasaps.service.UserService;
 import top.seiei.saasaps.util.DebugUtil;
 
@@ -33,7 +34,6 @@ public class UserController {
         if (serverResponse.isSuccess()) {
             session.setAttribute(Const.CURRENT_USER, serverResponse.getData());
         }
-        System.out.println(session.getAttribute(Const.CURRENT_USER));
         return serverResponse;
     }
 
@@ -46,6 +46,8 @@ public class UserController {
     @ResponseBody
     public ServerResponse<String> signout(HttpSession session) {
         session.removeAttribute(Const.CURRENT_USER);
+        // 删除存储在 AppSessionContext 公共变量对应的 session
+        AppSessionContext.delSession(session);
         return ServerResponse.createdBySuccessMessage("登出成功");
     }
 

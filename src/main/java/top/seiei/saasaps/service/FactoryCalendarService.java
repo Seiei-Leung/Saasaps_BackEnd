@@ -237,7 +237,7 @@ public class FactoryCalendarService {
      * @param yearList 年份列表
      * @return
      */
-    public ServerResponse getFactoryCalendarByYear(List<Integer> yearList) {
+    public ServerResponse<List<WorkingDateSettingVO>> getFactoryCalendarByYear(List<Integer> yearList) {
         if (yearList.size() == 0) {
             return ServerResponse.createdByError("输入参数不能为空");
         }

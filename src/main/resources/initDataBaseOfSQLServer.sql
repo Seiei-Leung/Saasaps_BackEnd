@@ -312,6 +312,8 @@ create table ArgumentSetting
   id int identity primary key, -- 主键
   after_minusOrChangeEfficiency_hasRemoveGapModel bit not null, -- 减数，修改效率之后，往后是否自动消除时间空隙
   after_minus_hasAmend bit not null, -- 减数后是否自动顺延
+  people_num int not null, -- 默认生产线人数
+  workhours decimal(10, 2) not null, -- 默认生产线工作时长
   update_user_id int not null, -- 更新用户 ID
   create_time datetime not null, -- 创建时间
   update_time datetime not null, -- 更新时间

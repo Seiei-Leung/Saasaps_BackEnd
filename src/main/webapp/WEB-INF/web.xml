@@ -13,6 +13,11 @@
     <session-timeout>60</session-timeout>
   </session-config>
 
+  <!-- 监听 session 的创建、摧毁事件 -->
+  <listener>
+    <listener-class>top.seiei.saasaps.listeners.SessionListenerForSessionContext</listener-class>
+  </listener>
+
   <!-- 防止Spring内存溢出监听器，应该配置在web.xml中与Spring相关监听器中的第一个位置 -->
   <listener>
     <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>

@@ -197,10 +197,6 @@ public class ProductionPlanningDetailService {
         return ServerResponse.createdByError("删除成功");
     }
 
-
-
-
-
     /**
      * 获取单号
      * @return
@@ -369,5 +365,46 @@ public class ProductionPlanningDetailService {
         productionPlanningDetail.setUpdateUserId(user.getId());
         productionPlanningDetailMapper.updateByPrimaryKey(productionPlanningDetail);
         return ServerResponse.createdBySuccess("删除成功");
+    }
+
+    /**
+     * 更新排产计划的批注
+     * @param user 修改用户信息
+     * @param params 参数
+     * @return
+     */
+    public ServerResponse updateMemoOfProgress(User user, Map<String, String> params) {
+        if (StringUtils.isBlank(params.get("id"))) {
+            return ServerResponse.createdByError("传入的排产计划主键不能为空！！");
+        }
+        Integer id = Integer.parseInt(params.get("id")); // 排产计划主键
+        ProductionPlanningDetail productionPlanningDetail = productionPlanningDetailMapper.selectByPrimaryKey(id);
+        if (productionPlanningDetail == null) {
+            return ServerResponse.createdByError("该排产进度不存在");
+        }
+        String memo = StringUtils.isBlank(params.get("memo")) ? "" : params.get("memo");
+        productionPlanningDetail.setMemo(memo);
+        productionPlanningDetail.setUpdateUserId(user.getId());
+        productionPlanningDetail.setUpdateTime(new Date());
+        productionPlanningDetailMapper.updateByPrimaryKeySelective(productionPlanningDetail);
+        return ServerResponse.createdBySuccess();
+    }
+
+    /**
+     * 删除排产进度 Memo
+     * @param user 用户
+     * @param id 排产进度主键
+     * @return
+     */
+    public ServerResponse deleteMemo(User user, Integer id) {
+        ProductionPlanningDetail productionPlanningDetail = productionPlanningDetailMapper.selectByPrimaryKey(id);
+        if (productionPlanningDetail == null) {
+            return ServerResponse.createdByError("该排产进度不存在");
+        }
+        productionPlanningDetail.setUpdateTime(new Date());
+        productionPlanningDetail.setUpdateUserId(user.getId());
+        productionPlanningDetail.setMemo("");
+        productionPlanningDetailMapper.updateByPrimaryKeySelective(productionPlanningDetail);
+        return ServerResponse.createdBySuccess();
     }
 }

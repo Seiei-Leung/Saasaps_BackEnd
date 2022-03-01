@@ -26,4 +26,8 @@ public interface ProductionPlanningDetailMapper {
     List<ProductionPlanningDetail> selectByLineIdAndTime(@Param("id") Integer id, @Param("time") Date time);
 
     List<ProductionPlanningDetail> selectAllForAddProgress();
+
+    Integer getSchedulingNumberOfToday(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    Integer getDeliveryOrderNumberOfWeek(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }

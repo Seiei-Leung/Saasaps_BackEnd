@@ -6,9 +6,11 @@ import org.springframework.web.servlet.ModelAndView;
 import top.seiei.saasaps.bean.User;
 import top.seiei.saasaps.common.Const;
 import top.seiei.saasaps.common.ResponseCode;
+import top.seiei.saasaps.pv.AppSessionContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 
 public class LoginInterceptor implements HandlerInterceptor {
@@ -23,7 +25,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 			return true;
 		}
 		// 拦截后根据 session 对象，检查用户是否已经登陆
-		User user = (User) request.getSession().getAttribute(Const.CURRENT_USER);
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute(Const.CURRENT_USER);
 		if (user != null) {
 			return true;
 		}
@@ -33,7 +36,10 @@ public class LoginInterceptor implements HandlerInterceptor {
 		//response.setHeader("Access-Control-Allow-Credentials", "true");
 		//response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
 		//response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-		
+
+		// 删除存储在 AppSessionContext 公共变量对应的 session
+		AppSessionContext.delSession(session);
+
 		// 设置 json 响应对象返回
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json; charset=utf-8");

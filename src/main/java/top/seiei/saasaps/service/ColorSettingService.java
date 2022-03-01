@@ -9,7 +9,7 @@ import top.seiei.saasaps.dao.ColorSettingMapper;
 import javax.annotation.Resource;
 import java.util.Date;
 
-@Service
+@Service("colorSettingService")
 public class ColorSettingService {
 
     @Resource
