@@ -15,6 +15,12 @@ public class ArgumentSetting implements Serializable {
 
     private Integer peopleNum;
 
+    private Integer checkMatchCutpartsDaynum;
+
+    private Integer approveToStartcutDaynum;
+
+    private Integer beforeMaterialInstorageDaynum;
+
     private Integer updateUserId;
 
     private Date createTime;
@@ -63,6 +69,30 @@ public class ArgumentSetting implements Serializable {
         this.peopleNum = peopleNum;
     }
 
+    public Integer getCheckMatchCutpartsDaynum() {
+        return checkMatchCutpartsDaynum;
+    }
+
+    public void setCheckMatchCutpartsDaynum(Integer checkMatchCutpartsDaynum) {
+        this.checkMatchCutpartsDaynum = checkMatchCutpartsDaynum;
+    }
+
+    public Integer getApproveToStartcutDaynum() {
+        return approveToStartcutDaynum;
+    }
+
+    public void setApproveToStartcutDaynum(Integer approveToStartcutDaynum) {
+        this.approveToStartcutDaynum = approveToStartcutDaynum;
+    }
+
+    public Integer getBeforeMaterialInstorageDaynum() {
+        return beforeMaterialInstorageDaynum;
+    }
+
+    public void setBeforeMaterialInstorageDaynum(Integer beforeMaterialInstorageDaynum) {
+        this.beforeMaterialInstorageDaynum = beforeMaterialInstorageDaynum;
+    }
+
     public Integer getUpdateUserId() {
         return updateUserId;
     }
@@ -104,6 +134,9 @@ public class ArgumentSetting implements Serializable {
             && (this.getAfterMinusHasamend() == null ? other.getAfterMinusHasamend() == null : this.getAfterMinusHasamend().equals(other.getAfterMinusHasamend()))
             && (this.getWorkhours() == null ? other.getWorkhours() == null : this.getWorkhours().equals(other.getWorkhours()))
             && (this.getPeopleNum() == null ? other.getPeopleNum() == null : this.getPeopleNum().equals(other.getPeopleNum()))
+            && (this.getCheckMatchCutpartsDaynum() == null ? other.getCheckMatchCutpartsDaynum() == null : this.getCheckMatchCutpartsDaynum().equals(other.getCheckMatchCutpartsDaynum()))
+            && (this.getApproveToStartcutDaynum() == null ? other.getApproveToStartcutDaynum() == null : this.getApproveToStartcutDaynum().equals(other.getApproveToStartcutDaynum()))
+            && (this.getBeforeMaterialInstorageDaynum() == null ? other.getBeforeMaterialInstorageDaynum() == null : this.getBeforeMaterialInstorageDaynum().equals(other.getBeforeMaterialInstorageDaynum()))
             && (this.getUpdateUserId() == null ? other.getUpdateUserId() == null : this.getUpdateUserId().equals(other.getUpdateUserId()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
@@ -118,6 +151,9 @@ public class ArgumentSetting implements Serializable {
         result = prime * result + ((getAfterMinusHasamend() == null) ? 0 : getAfterMinusHasamend().hashCode());
         result = prime * result + ((getWorkhours() == null) ? 0 : getWorkhours().hashCode());
         result = prime * result + ((getPeopleNum() == null) ? 0 : getPeopleNum().hashCode());
+        result = prime * result + ((getCheckMatchCutpartsDaynum() == null) ? 0 : getCheckMatchCutpartsDaynum().hashCode());
+        result = prime * result + ((getApproveToStartcutDaynum() == null) ? 0 : getApproveToStartcutDaynum().hashCode());
+        result = prime * result + ((getBeforeMaterialInstorageDaynum() == null) ? 0 : getBeforeMaterialInstorageDaynum().hashCode());
         result = prime * result + ((getUpdateUserId() == null) ? 0 : getUpdateUserId().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
@@ -135,6 +171,9 @@ public class ArgumentSetting implements Serializable {
         sb.append(", afterMinusHasamend=").append(afterMinusHasamend);
         sb.append(", workhours=").append(workhours);
         sb.append(", peopleNum=").append(peopleNum);
+        sb.append(", checkMatchCutpartsDaynum=").append(checkMatchCutpartsDaynum);
+        sb.append(", approveToStartcutDaynum=").append(approveToStartcutDaynum);
+        sb.append(", beforeMaterialInstorageDaynum=").append(beforeMaterialInstorageDaynum);
         sb.append(", updateUserId=").append(updateUserId);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);

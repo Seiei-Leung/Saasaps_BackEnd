@@ -7,13 +7,17 @@
     <result column="after_minus_hasAmend" jdbcType="BIT" property="afterMinusHasamend" />
     <result column="workhours" jdbcType="DECIMAL" property="workhours" />
     <result column="people_num" jdbcType="INTEGER" property="peopleNum" />
+    <result column="check_match_cutParts_dayNum" jdbcType="INTEGER" property="checkMatchCutpartsDaynum" />
+    <result column="approve_to_startCut_dayNum" jdbcType="INTEGER" property="approveToStartcutDaynum" />
+    <result column="before_material_inStorage_dayNum" jdbcType="INTEGER" property="beforeMaterialInstorageDaynum" />
     <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
     id, after_minusOrChangeEfficiency_hasRemoveGapModel, after_minus_hasAmend, workhours, 
-    people_num, update_user_id, create_time, update_time
+    people_num, check_match_cutParts_dayNum, approve_to_startCut_dayNum, before_material_inStorage_dayNum, 
+    update_user_id, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -28,12 +32,14 @@
   <insert id="insert" parameterType="top.seiei.saasaps.bean.ArgumentSetting">
     insert into ArgumentSetting (id, after_minusOrChangeEfficiency_hasRemoveGapModel, 
       after_minus_hasAmend, workhours, people_num, 
-      update_user_id, create_time, update_time
-      )
+      check_match_cutParts_dayNum, approve_to_startCut_dayNum, 
+      before_material_inStorage_dayNum, update_user_id, 
+      create_time, update_time)
     values (#{id,jdbcType=INTEGER}, #{afterMinusorchangeefficiencyHasremovegapmodel,jdbcType=BIT}, 
       #{afterMinusHasamend,jdbcType=BIT}, #{workhours,jdbcType=DECIMAL}, #{peopleNum,jdbcType=INTEGER}, 
-      #{updateUserId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+      #{checkMatchCutpartsDaynum,jdbcType=INTEGER}, #{approveToStartcutDaynum,jdbcType=INTEGER}, 
+      #{beforeMaterialInstorageDaynum,jdbcType=INTEGER}, #{updateUserId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="top.seiei.saasaps.bean.ArgumentSetting">
     insert into ArgumentSetting
@@ -52,6 +58,15 @@
       </if>
       <if test="peopleNum != null">
         people_num,
+      </if>
+      <if test="checkMatchCutpartsDaynum != null">
+        check_match_cutParts_dayNum,
+      </if>
+      <if test="approveToStartcutDaynum != null">
+        approve_to_startCut_dayNum,
+      </if>
+      <if test="beforeMaterialInstorageDaynum != null">
+        before_material_inStorage_dayNum,
       </if>
       <if test="updateUserId != null">
         update_user_id,
@@ -79,6 +94,15 @@
       <if test="peopleNum != null">
         #{peopleNum,jdbcType=INTEGER},
       </if>
+      <if test="checkMatchCutpartsDaynum != null">
+        #{checkMatchCutpartsDaynum,jdbcType=INTEGER},
+      </if>
+      <if test="approveToStartcutDaynum != null">
+        #{approveToStartcutDaynum,jdbcType=INTEGER},
+      </if>
+      <if test="beforeMaterialInstorageDaynum != null">
+        #{beforeMaterialInstorageDaynum,jdbcType=INTEGER},
+      </if>
       <if test="updateUserId != null">
         #{updateUserId,jdbcType=INTEGER},
       </if>
@@ -105,6 +129,15 @@
       <if test="peopleNum != null">
         people_num = #{peopleNum,jdbcType=INTEGER},
       </if>
+      <if test="checkMatchCutpartsDaynum != null">
+        check_match_cutParts_dayNum = #{checkMatchCutpartsDaynum,jdbcType=INTEGER},
+      </if>
+      <if test="approveToStartcutDaynum != null">
+        approve_to_startCut_dayNum = #{approveToStartcutDaynum,jdbcType=INTEGER},
+      </if>
+      <if test="beforeMaterialInstorageDaynum != null">
+        before_material_inStorage_dayNum = #{beforeMaterialInstorageDaynum,jdbcType=INTEGER},
+      </if>
       <if test="updateUserId != null">
         update_user_id = #{updateUserId,jdbcType=INTEGER},
       </if>
@@ -123,6 +156,9 @@
       after_minus_hasAmend = #{afterMinusHasamend,jdbcType=BIT},
       workhours = #{workhours,jdbcType=DECIMAL},
       people_num = #{peopleNum,jdbcType=INTEGER},
+      check_match_cutParts_dayNum = #{checkMatchCutpartsDaynum,jdbcType=INTEGER},
+      approve_to_startCut_dayNum = #{approveToStartcutDaynum,jdbcType=INTEGER},
+      before_material_inStorage_dayNum = #{beforeMaterialInstorageDaynum,jdbcType=INTEGER},
       update_user_id = #{updateUserId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}

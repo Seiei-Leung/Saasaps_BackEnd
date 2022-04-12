@@ -314,6 +314,9 @@ create table ArgumentSetting
   after_minus_hasAmend bit not null, -- 减数后是否自动顺延
   people_num int not null, -- 默认生产线人数
   workhours decimal(10, 2) not null, -- 默认生产线工作时长
+  check_match_cutParts_dayNum int not null, -- 查片配片天数
+  approve_to_startCut_dayNum int not null, -- 批办至开裁天数
+  before_material_inStorage_dayNum int not null, -- 布料入仓前置天数
   update_user_id int not null, -- 更新用户 ID
   create_time datetime not null, -- 创建时间
   update_time datetime not null, -- 更新时间
@@ -329,4 +332,4 @@ INSERT INTO ProductStyle VALUES ('中等款', '1', '2017-03-25 16:46:00', '2017-
 INSERT INTO ProductStyle VALUES ('及肯款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
 INSERT INTO ProductStyle VALUES ('平车款', '1', '2017-03-25 16:46:00', '2017-03-25 16:46:00');
 INSERT INTO ColorSetting VALUES ('#1FEF80', '#FFF001', '#0492D2', '#00D8FF', '#FF0000', '10', '2', '#ed4014', '#FF00E3', null, '1', '2016-11-06 16:56:45', '2017-04-04 19:27:36');
-INSERT INTO ArgumentSetting VALUES ('0', '0', '1', '2016-11-06 16:56:45', '2017-04-04 19:27:36');
+INSERT INTO ArgumentSetting VALUES ('0', '0', '1', '24', '9', '2016-11-06 16:56:45', '2017-04-04 19:27:36');

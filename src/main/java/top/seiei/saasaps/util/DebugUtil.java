@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
  */
 public class DebugUtil {
 
-    private static Boolean isDebug = false;
+    private static Boolean isDebug = true;
 
     /**
      * 从 session 中获取 User，如果是 Debug 状态则默认为 admin 账户
