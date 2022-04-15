@@ -63,7 +63,7 @@ public class ProductionPlanningDetailService {
                 String pathName = PropertiesUtil.getProperty("uploadExcelPath") + billNo + "." + ext;
                 excelFile.transferTo(new File(pathName));
                 Sheet sheet = ExcelUtil.getSheet(pathName, 0); // sheet 表
-                int rowCount = sheet.getLastRowNum(); // 表格的总行数
+                int rowCount = sheet.getLastRowNum() + 1; // 表格的总行数
                 SummaryOfProductionPlanningDetail summaryOfProductionPlanningDetail = new SummaryOfProductionPlanningDetail();
                 summaryOfProductionPlanningDetail.setBillno(billNo);
                 summaryOfProductionPlanningDetail.setUpdateUserId(user.getId());
