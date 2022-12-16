@@ -15,7 +15,7 @@
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 
         <!-- 依赖包版本号 -->
-        <spring.version>4.2.0.RELEASE</spring.version>
+        <spring.version>5.2.20.RELEASE</spring.version>
         <mybatis.version>3.3.0</mybatis.version>
         <log4j.version>2.6.1</log4j.version>
         <mysql.version>5.1.6</mysql.version>
